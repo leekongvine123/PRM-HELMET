@@ -16,7 +16,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.adapter.HelmetAdapter;
 import com.example.myapplication.database_helper.DatabaseHelper;
+import com.example.myapplication.fragments.CartFragment;
+import com.example.myapplication.fragments.FavoriteFragment;
 import com.example.myapplication.fragments.HomeFragment;
+import com.example.myapplication.fragments.ProfileFragment;
 import com.example.myapplication.model.Helmet;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -41,14 +44,13 @@ public class MainActivity extends AppCompatActivity {
             if (itemId == R.id.navigation_home) {
                 selectedFragment = new HomeFragment();
 
+            } else if (itemId == R.id.navigation_favorite) {
+                selectedFragment = new FavoriteFragment();
+        } else if (itemId == R.id.navigation_cart) {
+            selectedFragment = new CartFragment();
+            } else if (itemId == R.id.navigation_profile) {
+                selectedFragment = new ProfileFragment();
             }
-         //   } else if (itemId == R.id.navigation_favorites) {
-           //     selectedFragment = new FavoritesFragment();
-            //} else if (itemId == R.id.navigation_cart) {
-              //  selectedFragment = new CartFragment();
-            //} else if (itemId == R.id.navigation_profile) {
-             //   selectedFragment = new ProfileFragment();
-            //}
 
             // Load the selected fragment
             return loadFragment(selectedFragment);
