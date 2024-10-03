@@ -43,6 +43,8 @@ public class MainActivity extends AppCompatActivity {
             // Load HomeFragment by default
             loadFragment(new HomeFragment());
         }
+        // Load HomeFragment by default
+        loadFragment(new HomeFragment());
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {

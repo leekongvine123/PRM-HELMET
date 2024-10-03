@@ -9,6 +9,15 @@ public class CartItem {
     private int quantity;
     private double price;
     private Helmet helmet;
+    private boolean isSelected;
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean selected) {
+        isSelected = selected;
+    }
 
     // Getters and setters
     public int getCartID() { return cartID; }

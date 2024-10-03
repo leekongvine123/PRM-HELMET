@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -16,12 +17,23 @@ import com.bumptech.glide.Glide;
 import com.example.myapplication.R;
 import com.example.myapplication.model.CartItem;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
 
     private Context context;
     private List<CartItem> cartItems;
+    public interface OnCartChangeListener {
+        void onCartChanged();
+    }
+
+    private OnCartChangeListener onCartChangeListener;
+
+    public void setOnCartChangeListener(OnCartChangeListener listener) {
+        this.onCartChangeListener = listener;
+    }
+
 
     // Constructor
     public CartAdapter(Context context, List<CartItem> cartItems) {
@@ -33,6 +45,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView itemNameTextView, itemSizeTextView, itemColorTextView, itemQuantityTextView, itemPriceTextView;
         ImageView itemImageView;
+        CheckBox itemCheckBox;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -41,10 +54,10 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
             itemNameTextView = itemView.findViewById(R.id.itemNameTextView);
             itemSizeTextView = itemView.findViewById(R.id.itemSizeTextView);
             itemColorTextView = itemView.findViewById(R.id.itemColorTextView);
-            itemQuantityTextView = itemView.findViewById(R.id.itemQuantityTextView);
+//            itemQuantityTextView = itemView.findViewById(R.id.itemQuantityTextView);
             itemPriceTextView = itemView.findViewById(R.id.itemPriceTextView);
             itemImageView = itemView.findViewById(R.id.itemImageView);
-
+            itemCheckBox = itemView.findViewById(R.id.itemCheckBox);
         }
     }
 
@@ -65,10 +78,18 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
         holder.itemNameTextView.setText(cartItem.getHelmetName());
         holder.itemSizeTextView.setText("Size: " + cartItem.getSize());
         holder.itemColorTextView.setText("Color: " + cartItem.getColor());
-        holder.itemQuantityTextView.setText(cartItem.getQuantity() + "");
+//        holder.itemQuantityTextView.setText(cartItem.getQuantity() + "");
         holder.itemPriceTextView.setText("$" + String.format("%.2f", cartItem.getPrice()));
 
         Glide.with(holder.itemView.getContext()).load(cartItem.getHelmet().getImageUrl()).into(holder.itemImageView);
+        holder.itemCheckBox.setChecked(cartItem.isSelected());
+
+        holder.itemCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            cartItem.setSelected(isChecked);
+            if (onCartChangeListener != null) {
+                onCartChangeListener.onCartChanged();
+            }
+        });
         Log.d("CartItemData", "CartID: " + cartItem.getCartID() + ", HelmetName: " + cartItem.getHelmetName() + ", Size: " + cartItem.getSize() + ", Color: " + cartItem.getColor() + ", Quantity: " + cartItem.getQuantity() + ", Price: $" + cartItem.getPrice());
 
     }
@@ -77,5 +98,32 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
     public int getItemCount() {
         // Return the size of the cart items list
         return cartItems.size();
+    }
+
+    public void selectAllItems(boolean isSelected) {
+        for (CartItem item : cartItems) {
+            item.setSelected(isSelected);
+        }
+        notifyDataSetChanged();
+    }
+
+    public double calculateTotalAmount() {
+        double total = 0;
+        for (CartItem cartItem : cartItems) {
+            if (cartItem.isSelected()) {
+                total += cartItem.getPrice();
+            }
+        }
+        return total;
+    }
+
+    public List<CartItem> getSelectedItems() {
+        List<CartItem> selectedItems = new ArrayList<>();
+        for (CartItem item : cartItems) {
+            if (item.isSelected()) {
+                selectedItems.add(item);
+            }
+        }
+        return selectedItems;
     }
 }
