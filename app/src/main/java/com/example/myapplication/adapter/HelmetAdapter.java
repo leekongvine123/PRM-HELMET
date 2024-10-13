@@ -1,6 +1,7 @@
 package com.example.myapplication.adapter;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,6 +44,7 @@ public class HelmetAdapter extends RecyclerView.Adapter<HelmetAdapter.ViewHolder
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(context, HelmetDetailActivity.class);
             intent.putExtra("productCode",helmet.getProductCode());
+            intent.putExtra("helmetID", helmet.getHelmetID());
             intent.putExtra("helmetName", helmet.getName());
             intent.putExtra("helmetPrice", helmet.getPrice());
             intent.putExtra("helmetDescription", helmet.getDescription());
@@ -50,6 +52,9 @@ public class HelmetAdapter extends RecyclerView.Adapter<HelmetAdapter.ViewHolder
             context.startActivity(intent);
         });
         Glide.with(holder.itemView.getContext()).load(helmet.getImageUrl()).into(holder.imageView);
+
+        Log.d("Helmet", helmet.getName());
+
     }
 
     @Override

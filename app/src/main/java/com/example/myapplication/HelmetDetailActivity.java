@@ -14,11 +14,13 @@ import androidx.core.content.ContextCompat;
 
 import android.view.Gravity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.myapplication.database_helper.DatabaseHelper;
@@ -37,11 +39,15 @@ public class HelmetDetailActivity extends AppCompatActivity {
     private TextView helmetNameTextView, helmetPriceTextView, helmetDescriptionTextView;
     private LinearLayout colorOptionsLayout;
     private RadioGroup sizeRadioGroup;
+    private Button addToCartButton;
 
     private List<String> availableColors;
     private Map<String, List<String>> colorToSizeMap;
     private DatabaseHelper dbHelper;
     private String selectedColor;
+    private String selectedSize;
+
+    private int helmetID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,19 +62,30 @@ public class HelmetDetailActivity extends AppCompatActivity {
         helmetDescriptionTextView = findViewById(R.id.productDescriptionTextView);
         colorOptionsLayout = findViewById(R.id.colorOptionsLayout);
         sizeRadioGroup = findViewById(R.id.sizeRadioGroup);
+        addToCartButton = findViewById(R.id.addToCartButton);
         backBtn = findViewById(R.id.backButton);
 
+        // Initially disable Add to Cart button and set a different color for disabled state
+        addToCartButton.setEnabled(false);
+        addToCartButton.setBackgroundColor(Color.GRAY); // Set gray color when disabled
 
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
+            helmetID = getIntent().getIntExtra("helmetID", -1); // Retrieve helmetID from the intent
+            if (helmetID == -1) {
+                Toast.makeText(this, "Error: helmetID not found", Toast.LENGTH_SHORT).show();
+                finish();
+                return;
+            }
+
             String productCode = bundle.getString("productCode");
             String helmetName = bundle.getString("helmetName");
-            String helmetPrice = bundle.getString("helmetPrice");
+            Double helmetPrice = bundle.getDouble("helmetPrice");
             String helmetDescription = bundle.getString("helmetDescription");
             String imageUrl = bundle.getString("helmetImageUrl");
 
             helmetNameTextView.setText(helmetName);
-            helmetPriceTextView.setText(helmetPrice);
+            helmetPriceTextView.setText("$" + helmetPrice.toString());
             helmetDescriptionTextView.setText(helmetDescription);
 
             Glide.with(this).load(imageUrl).into(helmetImageView);
@@ -96,12 +113,15 @@ public class HelmetDetailActivity extends AppCompatActivity {
 
         backBtn.setOnClickListener(v-> back());
 
+        addToCartButton.setOnClickListener(v -> addToCart());
+
     }
 
     private void back() {
-        Intent intent = new Intent(this, HomeFragment.class); // Replace with your previous activity class
-        startActivity(intent); // Start the previous activity
-        finish();
+        Intent intent = new Intent(this, MainActivity.class); // Go back to MainActivity
+        intent.putExtra("navigateToHome", true); // Optional: Pass a flag to indicate that HomeFragment should be loaded
+        startActivity(intent); // Start the MainActivity
+        finish(); // Close the current activity
     }
 
     private void loadAvailableColors() {
@@ -232,10 +252,45 @@ public class HelmetDetailActivity extends AppCompatActivity {
             RadioButton sizeButton = new RadioButton(this);
             sizeButton.setText(size);
             sizeRadioGroup.addView(sizeButton);
+
+            sizeButton.setOnClickListener(v -> {
+                selectedSize = size;
+                checkSelections();
+            });
         }
         // Update any other UI elements that might be affected by the color change
         // For example, change the preview of the selected color
         updateColorPreview(selectedColor,colorView);
+    }
+
+    private void checkSelections() {
+        if (selectedColor != null && selectedSize != null) {
+            addToCartButton.setEnabled(true);
+            addToCartButton.setBackgroundColor(getResources().getColor(R.color.teal_200));
+        } else {
+            addToCartButton.setEnabled(false);
+            addToCartButton.setBackgroundColor(Color.GRAY);
+        }
+    }
+
+    private void addToCart() {
+        // Ensure both color and size are selected
+        if (selectedColor == null || selectedSize == null) {
+            Toast.makeText(this, "Please select both color and size", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Add item to cart
+        dbHelper.addItemToCart(
+                helmetID,
+                helmetNameTextView.getText().toString(),
+                selectedSize,
+                selectedColor,
+                1, // Default quantity is 1
+                Double.parseDouble(helmetPriceTextView.getText().toString().replace("$", "")),
+                1
+        );
+        Toast.makeText(this, "Item added to cart", Toast.LENGTH_SHORT).show();
     }
 
     private void updateColorPreview(String color, View colorView) {

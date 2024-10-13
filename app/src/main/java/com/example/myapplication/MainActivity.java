@@ -1,6 +1,9 @@
 package com.example.myapplication;
 
+import android.annotation.SuppressLint;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -32,8 +35,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
-        // Load HomeFragment by default
-        loadFragment(new HomeFragment());
+
+        // Check if the activity was started with the intent to load the HomeFragment
+        if (getIntent().getBooleanExtra("navigateToHome", false)) {
+            loadFragment(new HomeFragment()); // Load HomeFragment
+        } else {
+            // Load HomeFragment by default
+            loadFragment(new HomeFragment());
+        }
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
@@ -42,11 +51,10 @@ public class MainActivity extends AppCompatActivity {
 
             if (itemId == R.id.navigation_home) {
                 selectedFragment = new HomeFragment();
-
             } else if (itemId == R.id.navigation_favorite) {
                 selectedFragment = new FavoriteFragment();
-        } else if (itemId == R.id.navigation_cart) {
-            selectedFragment = new CartFragment();
+            } else if (itemId == R.id.navigation_cart) {
+                selectedFragment = new CartFragment();
             } else if (itemId == R.id.navigation_profile) {
                 selectedFragment = new ProfileFragment();
             }

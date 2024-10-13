@@ -37,9 +37,6 @@ public class HomeFragment extends Fragment {
         // Initialize DatabaseHelper
         DatabaseHelper dbHelper = new DatabaseHelper(requireContext()); // Use requireContext() for non-null context
 
-        // Clear any existing helmets and insert sample data
-        dbHelper.deleteAllHelmets();
-        dbHelper.insertSampleHelmets(); // Insert sample data into the database
 
         // Fetch helmet data
         List<Helmet> helmetList = dbHelper.getHelmets();

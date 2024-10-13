@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.example.myapplication.model.CartItem;
 import com.example.myapplication.model.Helmet;
 import com.example.myapplication.model.Order;
 import com.example.myapplication.model.OrderDetail;
@@ -30,6 +31,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TABLE_ORDERS = "Orders";
     private static final String TABLE_ORDER_DETAILS = "OrderDetails";
     private static final String TABLE_PAYMENTS = "Payments";
+    private static final String TABLE_CART = "Cart";
 
     // Tên các cột
     private static final String COLUMN_USER_ID = "Id";
@@ -68,6 +70,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_PAYMENT_DATE = "PaymentDate";
     private static final String COLUMN_PAYMENT_AMOUNT = "Amount";
     private static final String COLUMN_PAYMENT_METHOD = "PaymentMethod";
+
+    //Cột của Cart
+    private static final String COLUMN_CART_ID = "CartID";
+    private static final String COLUMN_CART_HELMET_ID = "HelmetID";
+    private static final String COLUMN_CART_HELMET_NAME = "HelmetName";
+    private static final String COLUMN_CART_SIZE = "Size";
+    private static final String COLUMN_CART_COLOR = "Color";
+    private static final String COLUMN_CART_QUANTITY = "Quantity";
+    private static final String COLUMN_CART_PRICE = "Price";
+    private static final String COLUMN_CART_USER_ID = "UserID";
 
     // Câu lệnh SQL để tạo bảng
     private static final String CREATE_TABLE_USERS = "CREATE TABLE " + TABLE_USERS + "(" +
@@ -121,6 +133,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             "FOREIGN KEY (" + COLUMN_PAYMENT_ORDER_ID + ") REFERENCES " + TABLE_ORDERS + "(" + COLUMN_ORDER_ID + ")" +
             ")";
 
+    private static final String CREATE_TABLE_CART = "CREATE TABLE " + TABLE_CART + "("
+            + COLUMN_CART_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+            + COLUMN_CART_USER_ID + " INTEGER,"
+            + COLUMN_CART_HELMET_ID + " INTEGER,"
+            + COLUMN_CART_HELMET_NAME + " TEXT,"
+            + COLUMN_CART_SIZE + " TEXT,"
+            + COLUMN_CART_COLOR + " TEXT,"
+            + COLUMN_CART_QUANTITY + " INTEGER,"
+            + COLUMN_CART_PRICE + " DECIMAL(10,2),"
+            + "FOREIGN KEY (" + COLUMN_CART_USER_ID + ") REFERENCES " + TABLE_USERS + "(" + COLUMN_USER_ID + "))";
+
+
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -133,6 +157,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_ORDERS);
         db.execSQL(CREATE_TABLE_ORDER_DETAILS);
         db.execSQL(CREATE_TABLE_PAYMENTS);
+        db.execSQL(CREATE_TABLE_CART);
+
+        insertSampleUsers(db);
+        insertSampleHelmets(db);
+
     }
 
     @Override
@@ -143,6 +172,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ORDERS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ORDER_DETAILS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_PAYMENTS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_CART);  // You missed this
         onCreate(db);
     }
 
@@ -511,6 +541,118 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return db.update(TABLE_PAYMENTS, values, COLUMN_PAYMENT_ID + " = ?", new String[]{String.valueOf(payment.getPaymentID())});
     }
 
+    //-------------Cart
+
+    public long addItemToCart(int helmetID, String helmetName, String size, String color, int quantity, double price, int userID) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_CART_HELMET_ID, helmetID);
+        values.put(COLUMN_CART_HELMET_NAME, helmetName);
+        values.put(COLUMN_CART_SIZE, size);
+        values.put(COLUMN_CART_COLOR, color);
+        values.put(COLUMN_CART_QUANTITY, quantity);
+        values.put(COLUMN_CART_PRICE, price);
+        values.put(COLUMN_CART_USER_ID, userID);
+
+        return db.insert(TABLE_CART, null, values);
+    }
+
+    @SuppressLint("Range")
+    public List<CartItem> getCartItemsByUser(int userID) {
+        List<CartItem> cartItems = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        // Query to get all cart items for a specific user
+        String query = "SELECT * FROM " + TABLE_CART + " WHERE " + COLUMN_CART_USER_ID + " = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(userID)});
+
+        if (cursor.moveToFirst()) {
+            do {
+                CartItem cartItem = new CartItem();
+                cartItem.setHelmetID(cursor.getInt(cursor.getColumnIndex(COLUMN_CART_HELMET_ID)));
+                cartItem.setCartID(cursor.getInt(cursor.getColumnIndex(COLUMN_CART_ID)));
+                cartItem.setHelmetName(cursor.getString(cursor.getColumnIndex(COLUMN_CART_HELMET_NAME)));
+                cartItem.setColor(cursor.getString(cursor.getColumnIndex(COLUMN_CART_COLOR)));
+                cartItem.setSize(cursor.getString(cursor.getColumnIndex(COLUMN_CART_SIZE)));
+                cartItem.setPrice(cursor.getDouble(cursor.getColumnIndex(COLUMN_CART_PRICE)));
+                cartItem.setQuantity(cursor.getInt(cursor.getColumnIndex(COLUMN_CART_QUANTITY)));
+
+                cartItems.add(cartItem);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        return cartItems;
+    }
+
+
+    @SuppressLint("Range")
+    public List<CartItem> getAllCartItems() {
+        List<CartItem> cartItems = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_CART, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                CartItem cartItem = new CartItem();
+                cartItem.setCartID(cursor.getInt(cursor.getColumnIndex(COLUMN_CART_ID)));
+                cartItem.setHelmetID(cursor.getInt(cursor.getColumnIndex(COLUMN_CART_HELMET_ID)));
+                cartItem.setHelmetName(cursor.getString(cursor.getColumnIndex(COLUMN_CART_HELMET_NAME)));
+                cartItem.setSize(cursor.getString(cursor.getColumnIndex(COLUMN_CART_SIZE)));
+                cartItem.setColor(cursor.getString(cursor.getColumnIndex(COLUMN_CART_COLOR)));
+                cartItem.setQuantity(cursor.getInt(cursor.getColumnIndex(COLUMN_CART_QUANTITY)));
+                cartItem.setPrice(cursor.getDouble(cursor.getColumnIndex(COLUMN_CART_PRICE)));
+
+                cartItems.add(cartItem);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return cartItems;
+    }
+
+    // Update the quantity of an item in the cart
+    public int updateCartItemQuantity(int cartID, int newQuantity) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_CART_QUANTITY, newQuantity);
+
+        return db.update(TABLE_CART, values, COLUMN_CART_ID + " = ?", new String[]{String.valueOf(cartID)});
+    }
+
+    // Remove an item from the cart
+    public void removeItemFromCart(int cartID) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_CART, COLUMN_CART_ID + " = ?", new String[]{String.valueOf(cartID)});
+    }
+
+    @SuppressLint("Range")
+    public List<CartItem> getCartItemsForUser(int userID) {
+        List<CartItem> cartItems = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery("SELECT * FROM Cart WHERE UserID = ?", new String[]{String.valueOf(userID)});
+
+        if (cursor.moveToFirst()) {
+            do {
+                CartItem cartItem = new CartItem();
+                cartItem.setHelmetID(cursor.getInt(cursor.getColumnIndex("HelmetID")));
+                cartItem.setHelmetName(cursor.getString(cursor.getColumnIndex("HelmetName")));
+                cartItem.setSize(cursor.getString(cursor.getColumnIndex("Size")));
+                cartItem.setColor(cursor.getString(cursor.getColumnIndex("Color")));
+                cartItem.setQuantity(cursor.getInt(cursor.getColumnIndex("Quantity")));
+                cartItem.setPrice(cursor.getDouble(cursor.getColumnIndex("Price")));
+
+                cartItems.add(cartItem);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+
+        return cartItems;
+    }
+
+    //--------------------------------------------------------------------------------------------------------------------------------
+
     public int deletePayment(int paymentId) {
         SQLiteDatabase db = this.getWritableDatabase();
         return db.delete(TABLE_PAYMENTS, COLUMN_PAYMENT_ID + " = ?", new String[]{String.valueOf(paymentId)});
@@ -535,9 +677,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DELETE FROM " + TABLE_ORDER_DETAILS);
     }
 
-    //insertdata
-    public void insertSampleHelmets() {
+    public void deleteAllCartItems() {
         SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DELETE FROM " + TABLE_CART);
+    }
+
+    public void deleteAllUsers() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DELETE FROM " + TABLE_USERS);
+    }
+
+    //insertdata
+    public void insertSampleHelmets(SQLiteDatabase db) {
         ContentValues values = new ContentValues();
 
         // Define product codes
@@ -614,6 +765,72 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_HELMET_CREATED_AT, "2024-09-26");
         values.put(COLUMN_HELMET_PRODUCT_CODE, productCode1); // Different product code
         db.insert(TABLE_HELMETS, null, values);
+    }
+
+    private void insertSampleUsers(SQLiteDatabase db) {
+        ContentValues values = new ContentValues();
+
+        try {
+            // Sample User 1
+            values.put(COLUMN_USER_NAME, "John Doe");
+            values.put(COLUMN_USER_EMAIL, "john@example.com");
+            values.put(COLUMN_USER_PHONE, "123456789");
+            values.put(COLUMN_USER_ADDRESS, "123 Street, City, Country");
+            db.insertOrThrow(TABLE_USERS, null, values); // use insertOrThrow for better error handling
+
+            // Sample User 2
+            values.clear();
+            values.put(COLUMN_USER_NAME, "Jane Smith");
+            values.put(COLUMN_USER_EMAIL, "jane@example.com");
+            values.put(COLUMN_USER_PHONE, "987654321");
+            values.put(COLUMN_USER_ADDRESS, "456 Avenue, City, Country");
+            db.insertOrThrow(TABLE_USERS, null, values);
+
+            // Sample User 3
+            values.clear();
+            values.put(COLUMN_USER_NAME, "Alice Johnson");
+            values.put(COLUMN_USER_EMAIL, "alice@example.com");
+            values.put(COLUMN_USER_PHONE, "543216789");
+            values.put(COLUMN_USER_ADDRESS, "789 Boulevard, City, Country");
+            db.insertOrThrow(TABLE_USERS, null, values);
+        } catch (Exception e) {
+            // Handle exceptions (like UNIQUE constraint failures)
+            e.printStackTrace();
+        }
+    }
+
+
+
+
+
+    ///============================================================================///============================================================================
+    ///============================================================================///============================================================================
+    ///============================================================================///============================================================================
+    ///============================================================================///============================================================================
+    ///============================================================================///============================================================================
+
+    // Method to get all users
+    public Cursor getAllUsers() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.rawQuery("SELECT * FROM " + TABLE_USERS, null);  // Replace 'user' with your actual user table name
+    }
+
+    // Method to get all cart items
+    public Cursor getAllCartItemsView() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.rawQuery("SELECT * FROM " + TABLE_CART, null);  // Replace 'cart' with your actual cart table name
+    }
+
+    // Method to get all cart items
+    public Cursor getAllCartItemsByUserId(int userID) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.rawQuery("SELECT * FROM " + TABLE_CART + " WHERE " + COLUMN_CART_USER_ID + " = ?", new String[]{String.valueOf(userID)});  // Replace 'cart' with your actual cart table name
+    }
+
+    // Method to get all cart items
+    public Cursor getAllHelmets() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.rawQuery("SELECT * FROM " + TABLE_HELMETS, null);  // Replace 'cart' with your actual cart table name
     }
 
 }
