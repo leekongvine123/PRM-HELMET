@@ -60,7 +60,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
         holder.itemNameTextView.setText(cartItem.getHelmetName());
         holder.itemSizeTextView.setText("Size: " + cartItem.getSize());
         holder.itemColorTextView.setText("Color: " + cartItem.getColor());
-        holder.itemQuantityTextView.setText("Qty: " + cartItem.getQuantity());
+        holder.itemQuantityTextView.setText(cartItem.getQuantity() + "");
 //        holder.itemPriceTextView.setText("$" + String.format("%.2f", cartItem.getPrice()));
 
         Log.d("CartItemData", "CartID: " + cartItem.getCartID() + ", HelmetName: " + cartItem.getHelmetName() + ", Size: " + cartItem.getSize() + ", Color: " + cartItem.getColor() + ", Quantity: " + cartItem.getQuantity() + ", Price: $" + cartItem.getPrice());
