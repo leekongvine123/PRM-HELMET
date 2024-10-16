@@ -53,8 +53,6 @@ public class HelmetAdapter extends RecyclerView.Adapter<HelmetAdapter.ViewHolder
         });
         Glide.with(holder.itemView.getContext()).load(helmet.getImageUrl()).into(holder.imageView);
 
-        Log.d("Helmet", helmet.getName());
-
     }
 
     @Override

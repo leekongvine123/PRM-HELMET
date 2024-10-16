@@ -562,6 +562,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         List<CartItem> cartItems = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
 
+
         // Query to get all cart items for a specific user
         String query = "SELECT * FROM " + TABLE_CART + " WHERE " + COLUMN_CART_USER_ID + " = ?";
         Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(userID)});
@@ -576,6 +577,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 cartItem.setSize(cursor.getString(cursor.getColumnIndex(COLUMN_CART_SIZE)));
                 cartItem.setPrice(cursor.getDouble(cursor.getColumnIndex(COLUMN_CART_PRICE)));
                 cartItem.setQuantity(cursor.getInt(cursor.getColumnIndex(COLUMN_CART_QUANTITY)));
+                cartItem.setHelmet(getHelmetById(cursor.getInt(cursor.getColumnIndex(COLUMN_CART_HELMET_ID))));
 
                 cartItems.add(cartItem);
             } while (cursor.moveToNext());

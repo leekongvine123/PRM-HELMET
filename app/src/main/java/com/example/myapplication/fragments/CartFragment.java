@@ -41,7 +41,7 @@ public class CartFragment extends Fragment {
 
         for (CartItem cart:
         cartItems) {
-            Log.d("CartItemData", "CartID: " + cart.getCartID() + ", HelmetName: " + cart.getHelmetName() + ", Size: " + cart.getSize() + ", Color: " + cart.getColor() + ", Quantity: " + cart.getQuantity() + ", Price: $" + cart.getPrice());
+            Log.d("CartItemData", "CartID: " + cart.getCartID() + ", HelmetName: " + cart.getHelmet().getName() + ", Size: " + cart.getHelmet().getSize() + ", Color: " + cart.getHelmet().getColor() + ", Quantity: " + cart.getQuantity() + ", Price: $" + cart.getPrice() + ", ImageURL: " + cart.getHelmet().getImageUrl());
         }
 
         // Set up RecyclerView

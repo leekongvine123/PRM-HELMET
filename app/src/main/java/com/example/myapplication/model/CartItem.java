@@ -8,6 +8,7 @@ public class CartItem {
     private String color;
     private int quantity;
     private double price;
+    private Helmet helmet;
 
     // Getters and setters
     public int getCartID() { return cartID; }
@@ -30,5 +31,8 @@ public class CartItem {
 
     public double getPrice() { return price; }
     public void setPrice(double price) { this.price = price; }
+
+    public Helmet getHelmet() { return helmet; }
+    public void setHelmet(Helmet helmet) { this.helmet = helmet; }
 }
 

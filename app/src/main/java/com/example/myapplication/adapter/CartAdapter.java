@@ -6,11 +6,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.myapplication.R;
 import com.example.myapplication.model.CartItem;
 
@@ -30,6 +32,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
     // ViewHolder class for the RecyclerView items
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView itemNameTextView, itemSizeTextView, itemColorTextView, itemQuantityTextView, itemPriceTextView;
+        ImageView itemImageView;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -40,6 +43,8 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
             itemColorTextView = itemView.findViewById(R.id.itemColorTextView);
             itemQuantityTextView = itemView.findViewById(R.id.itemQuantityTextView);
             itemPriceTextView = itemView.findViewById(R.id.itemPriceTextView);
+            itemImageView = itemView.findViewById(R.id.itemImageView);
+
         }
     }
 
@@ -61,8 +66,9 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
         holder.itemSizeTextView.setText("Size: " + cartItem.getSize());
         holder.itemColorTextView.setText("Color: " + cartItem.getColor());
         holder.itemQuantityTextView.setText(cartItem.getQuantity() + "");
-//        holder.itemPriceTextView.setText("$" + String.format("%.2f", cartItem.getPrice()));
+        holder.itemPriceTextView.setText("$" + String.format("%.2f", cartItem.getPrice()));
 
+        Glide.with(holder.itemView.getContext()).load(cartItem.getHelmet().getImageUrl()).into(holder.itemImageView);
         Log.d("CartItemData", "CartID: " + cartItem.getCartID() + ", HelmetName: " + cartItem.getHelmetName() + ", Size: " + cartItem.getSize() + ", Color: " + cartItem.getColor() + ", Quantity: " + cartItem.getQuantity() + ", Price: $" + cartItem.getPrice());
 
     }
