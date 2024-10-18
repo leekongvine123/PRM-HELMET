@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,6 +26,8 @@ import com.example.myapplication.fragments.HomeFragment;
 import com.example.myapplication.fragments.ProfileFragment;
 import com.example.myapplication.model.Helmet;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.List;
 
@@ -36,12 +39,18 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
-        // Check if the activity was started with the intent to load the HomeFragment
-        if (getIntent().getBooleanExtra("navigateToHome", false)) {
-            loadFragment(new HomeFragment()); // Load HomeFragment
-        } else {
-            // Load HomeFragment by default
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        // Check if the user is logged in
+
+
+        if (user != null) {
+            // User is logged in, proceed with loading the HomeFragment
             loadFragment(new HomeFragment());
+        } else {
+            // User is not logged in, redirect to LoginActivity
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+            finish(); // Close MainActivity to prevent back navigation to it
         }
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
