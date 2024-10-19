@@ -209,6 +209,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     @SuppressLint("Range")
+    public User getUserByEmail(String userEmail) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(TABLE_USERS, null, COLUMN_USER_EMAIL+ " = ?", new String[]{String.valueOf(userEmail)}, null, null, null);
+        if (cursor != null && cursor.moveToFirst()) {
+            User user = new User();
+            user.setId(cursor.getInt(cursor.getColumnIndex(COLUMN_USER_ID)));
+            user.setName(cursor.getString(cursor.getColumnIndex(COLUMN_USER_NAME)));
+            user.setEmail(cursor.getString(cursor.getColumnIndex(COLUMN_USER_EMAIL)));
+            user.setPhone(cursor.getString(cursor.getColumnIndex(COLUMN_USER_PHONE)));
+            user.setAddress(cursor.getString(cursor.getColumnIndex(COLUMN_USER_ADDRESS)));
+            user.setCreatedAt(cursor.getString(cursor.getColumnIndex(COLUMN_USER_CREATED_AT)));
+            cursor.close();
+            return user;
+        }
+        cursor.close();
+        return null;
+    }
+
+    @SuppressLint("Range")
     public List<User> getUsers() {
         List<User> users = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
@@ -835,4 +854,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return db.rawQuery("SELECT * FROM " + TABLE_HELMETS, null);  // Replace 'cart' with your actual cart table name
     }
 
+    public String getDatabasePath() {
+        return this.getWritableDatabase().getPath();
+    }
 }
