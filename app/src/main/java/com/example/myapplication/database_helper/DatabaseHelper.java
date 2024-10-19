@@ -708,6 +708,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DELETE FROM " + TABLE_USERS);
     }
 
+    public void deleteCartItem(int cartItemID) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_CART, COLUMN_CART_ID + " = ?", new String[]{String.valueOf(cartItemID)});
+    }
     //insertdata
     public void insertSampleHelmets(SQLiteDatabase db) {
         ContentValues values = new ContentValues();

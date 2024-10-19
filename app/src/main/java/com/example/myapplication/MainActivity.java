@@ -52,6 +52,8 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
             finish(); // Close MainActivity to prevent back navigation to it
         }
+        // Load HomeFragment by default
+        loadFragment(new HomeFragment());
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
