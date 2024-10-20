@@ -20,6 +20,13 @@ public class User {
         this.createdAt = createdAt;
     }
 
+    public User(String name, String email, String phone, String address) {
+        this.name = name;
+        this.email = email;
+        this.phone = phone;
+        this.address = address;
+    }
+
     public int getId() {
         return id;
     }
