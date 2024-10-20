@@ -1,18 +1,19 @@
 package com.example.myapplication;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.graphics.drawable.ShapeDrawable;
-import android.graphics.drawable.shapes.RectShape;
 import android.graphics.drawable.shapes.RoundRectShape;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 
-import android.view.Gravity;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.util.Log;
+import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -24,14 +25,24 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.myapplication.database_helper.DatabaseHelper;
-import com.example.myapplication.fragments.HomeFragment;
 import com.example.myapplication.model.Helmet;
+import com.paypal.android.sdk.payments.PayPalConfiguration;
+import com.paypal.android.sdk.payments.PayPalPayment;
+import com.paypal.android.sdk.payments.PayPalService;
+import com.paypal.android.sdk.payments.PaymentActivity;
+import com.paypal.android.sdk.payments.PaymentConfirmation;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import androidx.fragment.app.FragmentActivity;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class HelmetDetailActivity extends AppCompatActivity {
 
@@ -42,13 +53,17 @@ public class HelmetDetailActivity extends AppCompatActivity {
     private Button addToCartButton;
 
     private List<String> availableColors;
-    private Map<String, List<String>> colorToSizeMap;
+    private Map<String, Pair<List<String>, String>> colorToSizeMap;
     private DatabaseHelper dbHelper;
     private String selectedColor;
     private String selectedSize;
 
     private int helmetID;
 
+    String clientId = "AXcM1ViW0yHvDxEks2rEp6JwtRk4Zrw9niI3hWGPRHKn967ROCIftzH3QDzVwzx87ihx9GTttcPfxaHp";
+    int PAYPAL_REQUEST_CODE = 123;
+
+    public static PayPalConfiguration configuration;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,6 +79,9 @@ public class HelmetDetailActivity extends AppCompatActivity {
         sizeRadioGroup = findViewById(R.id.sizeRadioGroup);
         addToCartButton = findViewById(R.id.addToCartButton);
         backBtn = findViewById(R.id.backButton);
+        // paypal
+
+        configuration =  new PayPalConfiguration().environment(PayPalConfiguration.ENVIRONMENT_NO_NETWORK).clientId(clientId);
 
         // Initially disable Add to Cart button and set a different color for disabled state
         addToCartButton.setEnabled(false);
@@ -98,12 +116,14 @@ public class HelmetDetailActivity extends AppCompatActivity {
             for (Helmet helmet : helmets) {
                 String color = helmet.getColor();
                 String size = helmet.getSize();
+                String imgUrl = helmet.getImageUrl();
 
                 if (!colorToSizeMap.containsKey(color)) {
-                    colorToSizeMap.put(color, new ArrayList<>());
+                    colorToSizeMap.put(color, new Pair<>(new ArrayList<>(), imgUrl));
                 }
-                colorToSizeMap.get(color).add(size);
+                colorToSizeMap.get(color).first.add(size);
             }
+
 
             availableColors = new ArrayList<>(colorToSizeMap.keySet());
 
@@ -113,12 +133,13 @@ public class HelmetDetailActivity extends AppCompatActivity {
 
         backBtn.setOnClickListener(v-> back());
 
-        addToCartButton.setOnClickListener(v -> addToCart());
+       //addToCartButton.setOnClickListener(v -> addToCart());
+        addToCartButton.setOnClickListener(v -> getPayment());
 
     }
 
     private void back() {
-        Intent intent = new Intent(this, MainActivity.class); // Go back to MainActivity
+        Intent intent = new Intent(HelmetDetailActivity.this, MainActivity.class); // Go back to MainActivity
         intent.putExtra("navigateToHome", true); // Optional: Pass a flag to indicate that HomeFragment should be loaded
         startActivity(intent); // Start the MainActivity
         finish(); // Close the current activity
@@ -133,7 +154,7 @@ public class HelmetDetailActivity extends AppCompatActivity {
                     70  // height in pixels
             );
             params.setMargins(0, 0, 15, 0); // Set margin to the right
-            View colorView = new View(this);
+            View colorView = new View(HelmetDetailActivity.this);
             colorView.setLayoutParams(params); // Apply layout parameters
 
             // Determine the background color based on the available colors
@@ -242,14 +263,20 @@ public class HelmetDetailActivity extends AppCompatActivity {
     }
 
 
-    private void onColorSelected(String color,View colorView) {
-        // Logic for handling what happens when a color is selected
-        // For example, you could update a selected color variable
-        selectedColor = color; // Assuming you have a variable to store the currently selected color
+    private void onColorSelected(String color, View colorView) {
+        selectedColor = color;
         sizeRadioGroup.removeAllViews();
-        List<String> availableSizes = colorToSizeMap.get(selectedColor);
+
+        // Get the available sizes and image URL for the selected color
+        Pair<List<String>, String> sizesAndImage = colorToSizeMap.get(selectedColor);
+        List<String> availableSizes = sizesAndImage.first;
+        String imageUrl = sizesAndImage.second;
+
+        // Load the image based on the selected color
+        Glide.with(this).load(imageUrl).into(helmetImageView);
+
         for (String size : availableSizes) {
-            RadioButton sizeButton = new RadioButton(this);
+            RadioButton sizeButton = new RadioButton(HelmetDetailActivity.this);
             sizeButton.setText(size);
             sizeRadioGroup.addView(sizeButton);
 
@@ -258,10 +285,10 @@ public class HelmetDetailActivity extends AppCompatActivity {
                 checkSelections();
             });
         }
-        // Update any other UI elements that might be affected by the color change
-        // For example, change the preview of the selected color
-        updateColorPreview(selectedColor,colorView);
+
+        updateColorPreview(selectedColor, colorView);
     }
+
 
     private void checkSelections() {
         if (selectedColor != null && selectedSize != null) {
@@ -276,7 +303,7 @@ public class HelmetDetailActivity extends AppCompatActivity {
     private void addToCart() {
         // Ensure both color and size are selected
         if (selectedColor == null || selectedSize == null) {
-            Toast.makeText(this, "Please select both color and size", Toast.LENGTH_SHORT).show();
+            Toast.makeText(HelmetDetailActivity.this, "Please select both color and size", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -320,18 +347,38 @@ public class HelmetDetailActivity extends AppCompatActivity {
         // Assuming you have a preview view in your layout
         colorView.setBackground(createLayerDrawable(previewColor,2));
     }
+    private void getPayment(){
+        String amounts = "1000";
+        PayPalPayment payment = new PayPalPayment(new BigDecimal(String.valueOf(amounts)), "USD","CODE WITH VINH",PayPalPayment.PAYMENT_INTENT_SALE);
+        Intent intent = new Intent(HelmetDetailActivity.this, PaymentActivity.class);
+        intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION,configuration);
+        intent.putExtra(PaymentActivity.EXTRA_PAYMENT,payment);
 
+        startActivityForResult(intent,PAYPAL_REQUEST_CODE);
+     }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
-    private int getColorFromName(String colorName) {
-        switch (colorName.toLowerCase()) {
-            case "red":
-                return getResources().getColor(R.color.red);
-            case "blue":
-                return getResources().getColor(R.color.blue);
-            case "yellow":
-                return getResources().getColor(R.color.yellow);
-            default:
-                return getResources().getColor(R.color.black);
+        if (requestCode == PAYPAL_REQUEST_CODE) {
+            PaymentConfirmation paymentConfirmation = data.getParcelableExtra(PaymentActivity.EXTRA_RESULT_CONFIRMATION);
+
+            if (paymentConfirmation != null) {
+                try {
+                    String paymentDetails = paymentConfirmation.toJSONObject().toString();
+                    JSONObject object = new JSONObject(paymentDetails);
+                } catch (JSONException e) {
+                Toast.makeText(HelmetDetailActivity.this, e.getLocalizedMessage(),Toast.LENGTH_SHORT).show();
+                }
+
+            }
+            else if(requestCode == Activity.RESULT_CANCELED){
+                Toast.makeText(HelmetDetailActivity.this,"error",Toast.LENGTH_SHORT).show();
+            }
+        }
+        else if(requestCode == PaymentActivity.RESULT_EXTRAS_INVALID)
+        {
+            Toast.makeText(HelmetDetailActivity.this,"Invalid payment",Toast.LENGTH_SHORT).show();
         }
     }
 }

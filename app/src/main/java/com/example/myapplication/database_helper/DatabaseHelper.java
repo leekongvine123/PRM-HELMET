@@ -707,7 +707,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_HELMET_DESCRIPTION, "Description for Helmet A");
         values.put(COLUMN_HELMET_PRICE, 49.99);
         values.put(COLUMN_HELMET_STOCK, 10);
-        values.put(COLUMN_HELMET_IMAGE_URL, "https://thegioimubaohiem.vn/ckfinder/userfiles/images/products/gbU8ykimg0024.jpg");
+        values.put(COLUMN_HELMET_IMAGE_URL, "https://thegioimubaohiem.vn/ckfinder/userfiles/images/products/76EQzx_MG_9681.jpg");
         values.put(COLUMN_HELMET_CREATED_AT, "2024-09-26");
         values.put(COLUMN_HELMET_PRODUCT_CODE, productCode1); // Set product code
         db.insert(TABLE_HELMETS, null, values);
@@ -721,7 +721,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_HELMET_DESCRIPTION, "Description for Helmet B");
         values.put(COLUMN_HELMET_PRICE, 59.99);
         values.put(COLUMN_HELMET_STOCK, 15);
-        values.put(COLUMN_HELMET_IMAGE_URL, "https://thegioimubaohiem.vn/ckfinder/userfiles/images/products/gbU8ykimg0024.jpg");
+        values.put(COLUMN_HELMET_IMAGE_URL, "https://thegioimubaohiem.vn/ckfinder/userfiles/images/products/76EQzx_MG_9681.jpg");
         values.put(COLUMN_HELMET_CREATED_AT, "2024-09-26");
         values.put(COLUMN_HELMET_PRODUCT_CODE, productCode1); // Set same product code
         db.insert(TABLE_HELMETS, null, values);
@@ -735,7 +735,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_HELMET_DESCRIPTION, "Description for Helmet C");
         values.put(COLUMN_HELMET_PRICE, 39.99);
         values.put(COLUMN_HELMET_STOCK, 5);
-        values.put(COLUMN_HELMET_IMAGE_URL, "https://thegioimubaohiem.vn/ckfinder/userfiles/images/products/gbU8ykimg0024.jpg");
+        values.put(COLUMN_HELMET_IMAGE_URL, "https://thegioimubaohiem.vn/ckfinder/userfiles/images/products/8ocZp6CmSw3f_MG_9437.jpg");
         values.put(COLUMN_HELMET_CREATED_AT, "2024-09-26");
         values.put(COLUMN_HELMET_PRODUCT_CODE, productCode1); // Different product code
         db.insert(TABLE_HELMETS, null, values);
@@ -749,7 +749,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_HELMET_DESCRIPTION, "Description for Helmet D");
         values.put(COLUMN_HELMET_PRICE, 69.99);
         values.put(COLUMN_HELMET_STOCK, 8);
-        values.put(COLUMN_HELMET_IMAGE_URL, "https://thegioimubaohiem.vn/ckfinder/userfiles/images/products/gbU8ykimg0024.jpg");
+        values.put(COLUMN_HELMET_IMAGE_URL, "https://thegioimubaohiem.vn/ckfinder/userfiles/images/products/m8EBwaM139-TRON%20(1).jpg");
         values.put(COLUMN_HELMET_CREATED_AT, "2024-09-26");
         values.put(COLUMN_HELMET_PRODUCT_CODE, productCode1); // Different product code
         db.insert(TABLE_HELMETS, null, values);
@@ -763,7 +763,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_HELMET_DESCRIPTION, "Description for Helmet E");
         values.put(COLUMN_HELMET_PRICE, 79.99);
         values.put(COLUMN_HELMET_STOCK, 12);
-        values.put(COLUMN_HELMET_IMAGE_URL, "https://thegioimubaohiem.vn/ckfinder/userfiles/images/products/gbU8ykimg0024.jpg");
+        values.put(COLUMN_HELMET_IMAGE_URL, "https://thegioimubaohiem.vn/ckfinder/userfiles/images/products/m8EBwaM139-TRON%20(1).jpg");
         values.put(COLUMN_HELMET_CREATED_AT, "2024-09-26");
         values.put(COLUMN_HELMET_PRODUCT_CODE, productCode1); // Different product code
         db.insert(TABLE_HELMETS, null, values);
