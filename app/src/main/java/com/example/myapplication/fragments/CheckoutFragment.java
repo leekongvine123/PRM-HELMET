@@ -1,11 +1,14 @@
 package com.example.myapplication.fragments;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -14,6 +17,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.myapplication.MainActivity;
 import com.example.myapplication.R;
 import com.example.myapplication.adapter.CartAdapter;
 import com.example.myapplication.model.CartItem;
@@ -27,6 +31,7 @@ public class CheckoutFragment extends Fragment {
     private Button paypalButton;
     private List<CartItem> selectedItems;
     private CartAdapter checkoutAdapter;
+    private ImageView backBtn;
 
     public CheckoutFragment(List<CartItem> selectedItems) {
         this.selectedItems = selectedItems;
@@ -40,6 +45,7 @@ public class CheckoutFragment extends Fragment {
         checkoutRecyclerView = view.findViewById(R.id.checkoutRecyclerView);
         totalAmountTextView = view.findViewById(R.id.totalAmountTextView);
         paypalButton = view.findViewById(R.id.paypalButton);
+        backBtn = view.findViewById(R.id.backButton);
 
         for (CartItem cart:
                 selectedItems) {
@@ -48,7 +54,6 @@ public class CheckoutFragment extends Fragment {
 
 
         if (selectedItems != null && !selectedItems.isEmpty()) {
-            // Set up the RecyclerView to show the selected items
             checkoutRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
             checkoutAdapter = new CartAdapter(requireContext(), selectedItems);
             checkoutRecyclerView.setAdapter(checkoutAdapter);
@@ -60,12 +65,17 @@ public class CheckoutFragment extends Fragment {
             totalAmountTextView.setText("No items selected");
         }
 
-        // PayPal button click handler (You will need to integrate PayPal SDK here)
         paypalButton.setOnClickListener(v -> {
             // Initiate PayPal payment process
         });
 
+        backBtn.setOnClickListener(v-> back());
+
         return view;
+    }
+
+    private void back() {
+        requireActivity().getSupportFragmentManager().popBackStack();
     }
 
     private double calculateTotal(List<CartItem> selectedItems) {
