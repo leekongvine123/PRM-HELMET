@@ -1,5 +1,7 @@
 package com.example.myapplication.model;
 
+import java.util.Date;
+
 public class Order {
     private int orderID;
     private int customerID;
@@ -10,10 +12,9 @@ public class Order {
     public Order() {
     }
 
-    public Order(int orderID, int customerID, String orderDate, double totalAmount, String paymentStatus) {
-        this.orderID = orderID;
+    public Order(int customerID, double totalAmount, String paymentStatus) {
         this.customerID = customerID;
-        this.orderDate = orderDate;
+        this.orderDate = new Date().toString();
         this.totalAmount = totalAmount;
         this.paymentStatus = paymentStatus;
     }

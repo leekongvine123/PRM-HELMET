@@ -120,7 +120,7 @@ public class CartFragment extends Fragment {
                 Toast.makeText(requireContext(), "No items selected for checkout", Toast.LENGTH_SHORT).show();
             } else {
                 Bundle bundle = new Bundle();
-                CheckoutFragment checkoutFragment = new CheckoutFragment(selectedItems);
+                CheckoutFragment checkoutFragment = new CheckoutFragment(selectedItems,dbHelper);
                 checkoutFragment.setArguments(bundle);
 
                 // Assuming you are using Fragment transactions to navigate

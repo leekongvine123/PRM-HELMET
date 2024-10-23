@@ -390,15 +390,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     // --- Orders ---
 
-    public long addOrder(Order order) {
+    public int addOrder(Order order) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(COLUMN_ORDER_CUSTOMER_ID, order.getCustomerID());
         values.put(COLUMN_ORDER_TOTAL_AMOUNT, order.getTotalAmount());
         values.put(COLUMN_ORDER_PAYMENT_STATUS, order.getPaymentStatus());
+
+        // Insert the new order into the database
         long newRowId = db.insert(TABLE_ORDERS, null, values);
-        return newRowId;
+
+        // If the insertion was successful, return the row ID; otherwise, return -1
+        if (newRowId != -1) {
+            return (int) newRowId;  // Cast long to int safely
+        } else {
+            return -1;  // Indicate failure
+        }
     }
+
 
     @SuppressLint("Range")
     public Order getOrderById(int orderId) {
@@ -409,7 +418,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             order.setOrderID(cursor.getInt(cursor.getColumnIndex(COLUMN_ORDER_ID)));
             order.setCustomerID(cursor.getInt(cursor.getColumnIndex(COLUMN_ORDER_CUSTOMER_ID)));
             order.setOrderDate(cursor.getString(cursor.getColumnIndex(COLUMN_ORDER_DATE)));
-            order.setTotalAmount(cursor.getDouble(cursor.getColumnIndex(COLUMN_ORDER_TOTAL_AMOUNT)));
             order.setTotalAmount(cursor.getDouble(cursor.getColumnIndex(COLUMN_ORDER_TOTAL_AMOUNT)));
             order.setPaymentStatus(cursor.getString(cursor.getColumnIndex(COLUMN_ORDER_PAYMENT_STATUS)));
             cursor.close();
@@ -503,13 +511,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     // --- Payments ---
 
-    public long addPayment(Payment payment) {
+    public int addPayment(Payment payment) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(COLUMN_PAYMENT_ORDER_ID, payment.getOrderID());
         values.put(COLUMN_PAYMENT_AMOUNT, payment.getAmount());
         values.put(COLUMN_PAYMENT_METHOD, payment.getPaymentMethod());
-        long newRowId = db.insert(TABLE_PAYMENTS, null, values);
+        int newRowId = (int) db.insert(TABLE_PAYMENTS, null, values);
         return newRowId;
     }
 
@@ -521,7 +529,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             Payment payment = new Payment();
             payment.setPaymentID(cursor.getInt(cursor.getColumnIndex(COLUMN_PAYMENT_ID)));
             payment.setOrderID(cursor.getInt(cursor.getColumnIndex(COLUMN_PAYMENT_ORDER_ID)));
-            payment.setPaymentDate(cursor.getString(cursor.getColumnIndex(COLUMN_PAYMENT_DATE)));
             payment.setAmount(cursor.getDouble(cursor.getColumnIndex(COLUMN_PAYMENT_AMOUNT)));
             payment.setPaymentMethod(cursor.getString(cursor.getColumnIndex(COLUMN_PAYMENT_METHOD)));
             cursor.close();
@@ -541,7 +548,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 Payment payment = new Payment();
                 payment.setPaymentID(cursor.getInt(cursor.getColumnIndex(COLUMN_PAYMENT_ID)));
                 payment.setOrderID(cursor.getInt(cursor.getColumnIndex(COLUMN_PAYMENT_ORDER_ID)));
-                payment.setPaymentDate(cursor.getString(cursor.getColumnIndex(COLUMN_PAYMENT_DATE)));
                 payment.setAmount(cursor.getDouble(cursor.getColumnIndex(COLUMN_PAYMENT_AMOUNT)));
                 payment.setPaymentMethod(cursor.getString(cursor.getColumnIndex(COLUMN_PAYMENT_METHOD)));
                 payments.add(payment);

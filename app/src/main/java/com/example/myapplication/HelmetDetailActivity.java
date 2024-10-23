@@ -60,10 +60,7 @@ public class HelmetDetailActivity extends AppCompatActivity {
 
     private int helmetID;
 
-    String clientId = "AXcM1ViW0yHvDxEks2rEp6JwtRk4Zrw9niI3hWGPRHKn967ROCIftzH3QDzVwzx87ihx9GTttcPfxaHp";
-    int PAYPAL_REQUEST_CODE = 123;
 
-    public static PayPalConfiguration configuration;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,7 +78,6 @@ public class HelmetDetailActivity extends AppCompatActivity {
         backBtn = findViewById(R.id.backButton);
         // paypal
 
-        configuration =  new PayPalConfiguration().environment(PayPalConfiguration.ENVIRONMENT_NO_NETWORK).clientId(clientId);
 
         // Initially disable Add to Cart button and set a different color for disabled state
         addToCartButton.setEnabled(false);
@@ -126,15 +122,15 @@ public class HelmetDetailActivity extends AppCompatActivity {
 
 
             availableColors = new ArrayList<>(colorToSizeMap.keySet());
-
             // Load available colors and sizes
             loadAvailableColors();
         }
 
         backBtn.setOnClickListener(v-> back());
 
-       //addToCartButton.setOnClickListener(v -> addToCart());
-        addToCartButton.setOnClickListener(v -> getPayment());
+       addToCartButton.setOnClickListener(v -> addToCart());
+
+       //addToCartButton.setOnClickListener(v -> getPayment());
 
     }
 
@@ -347,39 +343,6 @@ public class HelmetDetailActivity extends AppCompatActivity {
         // Assuming you have a preview view in your layout
         colorView.setBackground(createLayerDrawable(previewColor,2));
     }
-    private void getPayment(){
-        String amounts = "1000";
-        PayPalPayment payment = new PayPalPayment(new BigDecimal(String.valueOf(amounts)), "USD","CODE WITH VINH",PayPalPayment.PAYMENT_INTENT_SALE);
-        Intent intent = new Intent(HelmetDetailActivity.this, PaymentActivity.class);
-        intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION,configuration);
-        intent.putExtra(PaymentActivity.EXTRA_PAYMENT,payment);
 
-        startActivityForResult(intent,PAYPAL_REQUEST_CODE);
-     }
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == PAYPAL_REQUEST_CODE) {
-            PaymentConfirmation paymentConfirmation = data.getParcelableExtra(PaymentActivity.EXTRA_RESULT_CONFIRMATION);
-
-            if (paymentConfirmation != null) {
-                try {
-                    String paymentDetails = paymentConfirmation.toJSONObject().toString();
-                    JSONObject object = new JSONObject(paymentDetails);
-                } catch (JSONException e) {
-                Toast.makeText(HelmetDetailActivity.this, e.getLocalizedMessage(),Toast.LENGTH_SHORT).show();
-                }
-
-            }
-            else if(requestCode == Activity.RESULT_CANCELED){
-                Toast.makeText(HelmetDetailActivity.this,"error",Toast.LENGTH_SHORT).show();
-            }
-        }
-        else if(requestCode == PaymentActivity.RESULT_EXTRAS_INVALID)
-        {
-            Toast.makeText(HelmetDetailActivity.this,"Invalid payment",Toast.LENGTH_SHORT).show();
-        }
-    }
 }
 

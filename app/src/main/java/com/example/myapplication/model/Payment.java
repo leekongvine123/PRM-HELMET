@@ -1,19 +1,21 @@
 package com.example.myapplication.model;
 
+import java.util.Date;
+
 public class Payment {
     private int paymentID;
     private int orderID;
-    private String paymentDate;
+    private Date paymentDate;
     private double amount;
     private String paymentMethod;
 
     public Payment() {
     }
 
-    public Payment(int paymentID, int orderID, String paymentDate, double amount, String paymentMethod) {
+    public Payment(int orderID, double amount, String paymentMethod) {
         this.paymentID = paymentID;
         this.orderID = orderID;
-        this.paymentDate = paymentDate;
+        this.paymentDate = new Date();
         this.amount = amount;
         this.paymentMethod = paymentMethod;
     }
@@ -34,11 +36,11 @@ public class Payment {
         this.orderID = orderID;
     }
 
-    public String getPaymentDate() {
+    public Date getPaymentDate() {
         return paymentDate;
     }
 
-    public void setPaymentDate(String paymentDate) {
+    public void setPaymentDate(Date paymentDate) {
         this.paymentDate = paymentDate;
     }
 
