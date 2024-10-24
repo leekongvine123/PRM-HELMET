@@ -6,5 +6,6 @@
     <string name="title_map">Map</string>
     <string name="title_cart">Cart</string>
     <string name="title_profile">Profile</string>
+    <string name="title_history">History</string>
     <string name="default_web_client_id">154433135393-pome1a865qr5hfjll20eabr9ta4gdll4.apps.googleusercontent.com</string>
 </resources>

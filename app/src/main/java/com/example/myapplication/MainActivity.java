@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.myapplication.fragments.CartFragment;
 import com.example.myapplication.fragments.FavoriteFragment;
+import com.example.myapplication.fragments.HistoryFragment;
 import com.example.myapplication.fragments.HomeFragment;
 import com.example.myapplication.fragments.MapFragment;
 import com.example.myapplication.fragments.ProfileFragment;
@@ -55,6 +56,8 @@ public class MainActivity extends AppCompatActivity {
                 selectedFragment = new CartFragment();
             } else if (itemId == R.id.navigation_profile) {
                 selectedFragment = new ProfileFragment();
+            } else if (itemId == R.id.navigation_history) {
+                selectedFragment = new HistoryFragment();
             }
 
             // Load the selected fragment
