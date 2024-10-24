@@ -161,7 +161,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         insertSampleUsers(db);
         insertSampleHelmets(db);
-
+        insertSampleOrders(db);  // Insert sample orders and order details
     }
 
     @Override
@@ -1105,11 +1105,67 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             db.insertOrThrow(TABLE_USERS, null, values);
 
 
+
+
+
         } catch (Exception e) {
             // Handle exceptions (like UNIQUE constraint failures)
             e.printStackTrace();
         }
     }
+
+    private void insertSampleOrders(SQLiteDatabase db) {
+        ContentValues orderValues = new ContentValues();
+        ContentValues orderDetailValues = new ContentValues();
+
+        try {
+            // Insert Order 1
+            orderValues.put(COLUMN_ORDER_CUSTOMER_ID, 1); // Assuming customerID 1 exists
+            orderValues.put(COLUMN_ORDER_TOTAL_AMOUNT, 150.50);
+            orderValues.put(COLUMN_ORDER_PAYMENT_STATUS, "Paid");
+            long orderId1 = db.insertOrThrow(TABLE_ORDERS, null, orderValues); // Insert order 1 and get order ID
+
+            // Insert Order Details for Order 1
+            orderDetailValues.put(COLUMN_ORDER_DETAIL_ORDER_ID, orderId1);
+            orderDetailValues.put(COLUMN_ORDER_DETAIL_HELMET_ID, 1); // Assuming helmetID 1 exists
+            orderDetailValues.put(COLUMN_ORDER_DETAIL_QUANTITY, 2);
+            orderDetailValues.put(COLUMN_ORDER_DETAIL_PRICE, 50.25);
+            db.insertOrThrow(TABLE_ORDER_DETAILS, null, orderDetailValues); // Order detail 1
+
+            orderDetailValues.clear();
+            orderDetailValues.put(COLUMN_ORDER_DETAIL_ORDER_ID, orderId1);
+            orderDetailValues.put(COLUMN_ORDER_DETAIL_HELMET_ID, 2); // Assuming helmetID 2 exists
+            orderDetailValues.put(COLUMN_ORDER_DETAIL_QUANTITY, 1);
+            orderDetailValues.put(COLUMN_ORDER_DETAIL_PRICE, 50.00);
+            db.insertOrThrow(TABLE_ORDER_DETAILS, null, orderDetailValues); // Order detail 2
+
+            // Insert Order 2
+            orderValues.clear();
+            orderValues.put(COLUMN_ORDER_CUSTOMER_ID, 2); // Assuming customerID 2 exists
+            orderValues.put(COLUMN_ORDER_TOTAL_AMOUNT, 200.00);
+            orderValues.put(COLUMN_ORDER_PAYMENT_STATUS, "Pending");
+            long orderId2 = db.insertOrThrow(TABLE_ORDERS, null, orderValues); // Insert order 2 and get order ID
+
+            // Insert Order Details for Order 2
+            orderDetailValues.clear();
+            orderDetailValues.put(COLUMN_ORDER_DETAIL_ORDER_ID, orderId2);
+            orderDetailValues.put(COLUMN_ORDER_DETAIL_HELMET_ID, 3); // Assuming helmetID 3 exists
+            orderDetailValues.put(COLUMN_ORDER_DETAIL_QUANTITY, 3);
+            orderDetailValues.put(COLUMN_ORDER_DETAIL_PRICE, 60.00);
+            db.insertOrThrow(TABLE_ORDER_DETAILS, null, orderDetailValues); // Order detail 1
+
+            orderDetailValues.clear();
+            orderDetailValues.put(COLUMN_ORDER_DETAIL_ORDER_ID, orderId2);
+            orderDetailValues.put(COLUMN_ORDER_DETAIL_HELMET_ID, 4); // Assuming helmetID 4 exists
+            orderDetailValues.put(COLUMN_ORDER_DETAIL_QUANTITY, 2);
+            orderDetailValues.put(COLUMN_ORDER_DETAIL_PRICE, 40.00);
+            db.insertOrThrow(TABLE_ORDER_DETAILS, null, orderDetailValues); // Order detail 2
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
 
 
