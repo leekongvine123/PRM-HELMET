@@ -93,7 +93,6 @@ public class HelmetDetailActivity extends AppCompatActivity {
             Glide.with(this).load(imageUrl).into(helmetImageView);
 
             // Fetch helmets by product code to get all colors and sizes
-            // Assuming you have a method to fetch helmets
             List<Helmet> helmets = dbHelper.getHelmetsByProductCode(productCode);
 
             colorToSizeMap = new HashMap<>();
@@ -214,7 +213,7 @@ public class HelmetDetailActivity extends AppCompatActivity {
             colorView.setBackground(createLayerDrawable(backgroundColor,1));
 
             colorView.setOnClickListener(v -> {
-                selectedColor =color.toLowerCase();
+                selectedColor = color.toLowerCase();
                 resetColorViews(); // Reset the styles of all views
                 // Highlight the selected color with a heavier border
              //   colorView.setBackground(createLayerDrawable(backgroundColor)); // Keep the same background but reset the view
@@ -342,9 +341,6 @@ public class HelmetDetailActivity extends AppCompatActivity {
 
         updateColorPreview(selectedColor, colorView);
     }
-
-
-
 
 
     private void checkSelections() {
