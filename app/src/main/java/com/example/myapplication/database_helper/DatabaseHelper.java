@@ -705,14 +705,66 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cartItems;
     }
 
+    public boolean isItemInCart(int cartId, int userId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        // Query to check if the item is in the cart for the given user
+        String query = "SELECT * FROM " + TABLE_CART + " WHERE " + COLUMN_CART_ID + " = ? AND " + COLUMN_CART_USER_ID + " = ?";
+
+        // Execute the query
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(cartId), String.valueOf(userId)});
+
+        // Check if the cursor returns any rows
+        boolean isInCart = cursor.moveToFirst();
+
+        // Close the cursor to avoid memory leaks
+        cursor.close();
+
+        return isInCart;
+    }
+
+    public int incrementCartItemQuantityByHelmetId(int helmetID, int userID) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        // First, get the current quantity of the item in the cart
+        String query = "SELECT " + COLUMN_CART_QUANTITY + " FROM " + TABLE_CART + " WHERE " + COLUMN_CART_HELMET_ID + " = ? AND " + COLUMN_CART_USER_ID + " = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(helmetID), String.valueOf(userID)});
+
+        if (cursor != null && cursor.moveToFirst()) {
+            // Get the current quantity, increment by 1
+            int currentQuantity = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_CART_QUANTITY));
+            cursor.close();
+
+            // Increment the quantity by 1
+            int newQuantity = currentQuantity + 1;
+
+            // Update the cart with the new quantity
+            ContentValues values = new ContentValues();
+            values.put(COLUMN_CART_QUANTITY, newQuantity);
+
+            return db.update(TABLE_CART, values, COLUMN_CART_HELMET_ID + " = ? AND " + COLUMN_CART_USER_ID + " = ?",
+                    new String[]{String.valueOf(helmetID), String.valueOf(userID)});
+        } else {
+            if (cursor != null) {
+                cursor.close();
+            }
+            return 0; // Return 0 if the item is not found in the cart
+        }
+    }
+
+
+
     // Update the quantity of an item in the cart
-    public int updateCartItemQuantity(int cartID, int newQuantity) {
+    public int updateCartItemQuantityByHelmetId(int helmetID, int userID, int newQuantity) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(COLUMN_CART_QUANTITY, newQuantity);
 
-        return db.update(TABLE_CART, values, COLUMN_CART_ID + " = ?", new String[]{String.valueOf(cartID)});
+        // Update the quantity where helmetID and userID match
+        return db.update(TABLE_CART, values, COLUMN_CART_HELMET_ID + " = ? AND " + COLUMN_CART_USER_ID + " = ?",
+                new String[]{String.valueOf(helmetID), String.valueOf(userID)});
     }
+
 
     // Remove an item from the cart
     public void removeItemFromCart(int cartID) {

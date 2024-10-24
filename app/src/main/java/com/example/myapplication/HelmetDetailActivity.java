@@ -366,16 +366,22 @@ public class HelmetDetailActivity extends AppCompatActivity {
             return;
         }
 
+        if(!checkIsExistCart(helmetID, userId)) {
+            dbHelper.addItemToCart(
+                    helmetID,
+                    helmetNameTextView.getText().toString(),
+                    selectedSize,
+                    selectedColor,
+                    1, // Default quantity is 1
+                    Double.parseDouble(helmetPriceTextView.getText().toString().replace("$", "")),
+                    userId
+            );
+        } else {
+            dbHelper.incrementCartItemQuantityByHelmetId(helmetID, userId);
+        }
+
         // Add item to cart
-        dbHelper.addItemToCart(
-                helmetID,
-                helmetNameTextView.getText().toString(),
-                selectedSize,
-                selectedColor,
-                1, // Default quantity is 1
-                Double.parseDouble(helmetPriceTextView.getText().toString().replace("$", "")),
-                userId
-        );
+
         Toast.makeText(this, "Item added to cart", Toast.LENGTH_SHORT).show();
     }
 
@@ -405,6 +411,10 @@ public class HelmetDetailActivity extends AppCompatActivity {
 
         // Assuming you have a preview view in your layout
         colorView.setBackground(createLayerDrawable(previewColor,2));
+    }
+
+    private boolean checkIsExistCart(int helmetId, int userId) {
+        return dbHelper.isItemInCart(helmetId, userId);
     }
 
 }
