@@ -53,7 +53,7 @@ public class HelmetDetailActivity extends AppCompatActivity {
     private Button addToCartButton;
 
     private List<String> availableColors;
-    private Map<String, Pair<List<String>, String>> colorToSizeMap;
+    private Map<String, Pair<Map<String, Integer>, String>> colorToSizeMap;
     private DatabaseHelper dbHelper;
     private String selectedColor;
     private String selectedSize;
@@ -113,11 +113,13 @@ public class HelmetDetailActivity extends AppCompatActivity {
                 String color = helmet.getColor();
                 String size = helmet.getSize();
                 String imgUrl = helmet.getImageUrl();
+                int id = helmet.getHelmetID();
 
                 if (!colorToSizeMap.containsKey(color)) {
-                    colorToSizeMap.put(color, new Pair<>(new ArrayList<>(), imgUrl));
+                    colorToSizeMap.put(color, new Pair<>(new HashMap<>(), imgUrl));
                 }
-                colorToSizeMap.get(color).first.add(size);
+//                colorToSizeMap.get(color).first.add(size);
+                colorToSizeMap.get(color).first.put(size, id);
             }
 
 
@@ -179,7 +181,7 @@ public class HelmetDetailActivity extends AppCompatActivity {
             colorView.setBackground(createLayerDrawable(backgroundColor,1));
 
             colorView.setOnClickListener(v -> {
-                selectedColor =color.toLowerCase();
+                selectedColor = color.toLowerCase();
                 resetColorViews(); // Reset the styles of all views
                 // Highlight the selected color with a heavier border
              //   colorView.setBackground(createLayerDrawable(backgroundColor)); // Keep the same background but reset the view
@@ -264,20 +266,21 @@ public class HelmetDetailActivity extends AppCompatActivity {
         sizeRadioGroup.removeAllViews();
 
         // Get the available sizes and image URL for the selected color
-        Pair<List<String>, String> sizesAndImage = colorToSizeMap.get(selectedColor);
-        List<String> availableSizes = sizesAndImage.first;
+        Pair<Map<String, Integer>, String> sizesAndImage = colorToSizeMap.get(selectedColor);
+        Map<String, Integer> availableSizes = sizesAndImage.first;
         String imageUrl = sizesAndImage.second;
 
         // Load the image based on the selected color
         Glide.with(this).load(imageUrl).into(helmetImageView);
 
-        for (String size : availableSizes) {
+        for (String size : availableSizes.keySet()) {
             RadioButton sizeButton = new RadioButton(HelmetDetailActivity.this);
             sizeButton.setText(size);
             sizeRadioGroup.addView(sizeButton);
 
             sizeButton.setOnClickListener(v -> {
                 selectedSize = size;
+                helmetID = availableSizes.get(size);
                 checkSelections();
             });
         }
