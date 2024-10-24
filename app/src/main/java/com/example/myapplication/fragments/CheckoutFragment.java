@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.LoginActivity;
+import com.example.myapplication.MainActivity;
 import com.example.myapplication.R;
 import com.example.myapplication.adapter.CartAdapter;
 import com.example.myapplication.database_helper.DatabaseHelper;
@@ -55,6 +56,7 @@ public class CheckoutFragment extends Fragment {
     String clientId = "AXcM1ViW0yHvDxEks2rEp6JwtRk4Zrw9niI3hWGPRHKn967ROCIftzH3QDzVwzx87ihx9GTttcPfxaHp";
     int PAYPAL_REQUEST_CODE = 123;
     private int orderId = 0;
+    User user ;
     public static PayPalConfiguration configuration;
     public CheckoutFragment(List<CartItem> selectedItems, DatabaseHelper dbHelper) {
         this.selectedItems = selectedItems;
@@ -70,6 +72,7 @@ public class CheckoutFragment extends Fragment {
         // Check if the user is logged in
         configuration =  new PayPalConfiguration().environment(PayPalConfiguration.ENVIRONMENT_NO_NETWORK).clientId(clientId);
 
+         user = dbHelper.getUserByEmail(userFirebase.getEmail());
 
 
         checkoutRecyclerView = view.findViewById(R.id.checkoutRecyclerView);
@@ -154,7 +157,7 @@ public class CheckoutFragment extends Fragment {
 
         // Step 3: Create an order with "Pending" status
         //
-        Order newOrder = new Order(1, totalAmount, "Pending"); // Assuming userId is available
+        Order newOrder = new Order(user.getId(), totalAmount, "Pending"); // Assuming userId is available
 
         try {
             orderId = dbHelper.addOrder(newOrder);
@@ -221,7 +224,11 @@ public class CheckoutFragment extends Fragment {
                         for (CartItem item : selectedItems) {
                          dbHelper.deleteCartItem(item.getCartID());
                         }
+
                         Toast.makeText(requireContext(), "Payment Successful!", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(requireActivity(), MainActivity.class);
+                        startActivityForResult(intent,100);
+
                     } catch (JSONException e) {
                         Toast.makeText(requireContext(), "Error parsing payment details: " + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                     }

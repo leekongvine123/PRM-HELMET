@@ -1,13 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="700dp"
     android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/txtOrderId"
+        android:layout_width="164dp"
+        android:layout_height="wrap_content"
+        android:text="Order History"
+        android:textColor="@android:color/black"
+        android:textSize="20sp"
+        android:paddingLeft="10dp"
+        android:textStyle="bold" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewOrders"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="646dp"
         android:layout_margin="16dp"
         android:scrollbars="vertical" />
 </LinearLayout>

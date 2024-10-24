@@ -7,43 +7,48 @@
     android:padding="16dp"
 >
     <!-- Title TextView -->
+
+    <!-- RecyclerView for Cart Items -->
+
+    <!-- Select All Button -->
+
+    <!-- Total and Checkout Section -->
+
     <TextView
         android:id="@+id/cartTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:text="Cart Shopping"
+        android:textColor="@color/text_primary"
         android:textSize="24sp"
         android:textStyle="bold"
-        android:textColor="@color/text_primary"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- RecyclerView for Cart Items -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/cartRecyclerView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="353dp"
+        android:layout_height="470dp"
         android:layout_marginTop="16dp"
-        app:layout_constraintTop_toBottomOf="@id/cartTitle"
         app:layout_constraintBottom_toTopOf="@id/selectAllButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.494"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/cartTitle" />
 
-    <!-- Select All Button -->
     <Button
         android:id="@+id/selectAllButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="12dp"
+        android:backgroundTint="@color/primary"
         android:text="Select All Items"
         android:textColor="@android:color/white"
-        android:backgroundTint="@color/primary"
-        app:layout_constraintTop_toBottomOf="@id/cartRecyclerView"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/cartRecyclerView" />
 
-    <!-- Total and Checkout Section -->
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
@@ -57,17 +62,18 @@
         app:layout_constraintEnd_toEndOf="parent">
 
         <!-- Total Amount TextView -->
+
+        <!-- Checkout Button -->
         <TextView
             android:id="@+id/totalAmount"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Total: $0.00"
+            android:textColor="@color/text_primary"
             android:textSize="18sp"
-            android:textStyle="bold"
-            android:textColor="@color/text_primary" />
+            android:textStyle="bold" />
 
-        <!-- Checkout Button -->
         <Button
             android:id="@+id/checkoutButton"
             android:layout_width="wrap_content"

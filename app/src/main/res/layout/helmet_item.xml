@@ -21,7 +21,7 @@
             <ImageView
                 android:id="@+id/imageView"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
+                android:layout_height="155dp"
                 android:scaleType="centerCrop" />
 
         </FrameLayout>
@@ -31,24 +31,28 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:padding="16dp"
+            android:paddingTop="2dp">
+
 
             <!-- Brand with Chip -->
+
+            <!-- Product Name -->
+
             <com.google.android.material.chip.Chip
                 android:id="@+id/brandChip"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="36dp"
                 android:text="Hãng"
                 android:textColor="#757575"
-                app:chipBackgroundColor="#F5F5F5"
-                android:textSize="12sp" />
+                android:textSize="12sp"
+                app:chipBackgroundColor="#F5F5F5" />
 
-            <!-- Product Name -->
             <TextView
                 android:id="@+id/nameTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="2dp"
                 android:text="Tên nón bảo hiểm"
                 android:textColor="#212121"
                 android:textSize="18sp"
@@ -56,6 +60,7 @@
                 android:fontFamily="sans-serif-medium" />
 
             <!-- Brand Text (Hidden by default, kept for compatibility) -->
+
             <TextView
                 android:id="@+id/brandTextView"
                 android:layout_width="wrap_content"
@@ -67,7 +72,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="2dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
@@ -90,6 +95,7 @@
                 android:layout_height="wrap_content"
                 android:backgroundTint="#4CAF50"
                 android:text="Mua ngay"
+                android:visibility="gone"
                 android:textAllCaps="false"
                 app:cornerRadius="8dp" />
 
