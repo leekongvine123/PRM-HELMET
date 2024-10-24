@@ -23,7 +23,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "helmet_shop.db";
 
     // Phiên bản cơ sở dữ liệu
-    private static final int DATABASE_VERSION = 7;
+    private static final int DATABASE_VERSION = 9;
 
     // Tên các bảng
     private static final String TABLE_USERS = "Users";

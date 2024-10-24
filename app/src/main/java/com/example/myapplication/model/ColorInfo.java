@@ -3,6 +3,7 @@ package com.example.myapplication.model;
 import java.util.List;
 
 public class ColorInfo {
+
     private String color;
     private String imageUrl;
     private List<SizeStock> sizeStocks;
@@ -36,14 +37,25 @@ public class ColorInfo {
 
 
     public static class SizeStock{
+        private int id;
         private String size;
         private int stock;
         private double price;
 
-        public SizeStock(String size, int stock, double price) {
-            this.size = size;
-            this.stock = stock;
+
+        public SizeStock(int id, double price, int stock, String size) {
+            this.id = id;
             this.price = price;
+            this.stock = stock;
+            this.size = size;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
         }
 
         public double getPrice() {

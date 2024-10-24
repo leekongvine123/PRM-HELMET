@@ -199,7 +199,9 @@ public class CheckoutFragment extends Fragment {
                             order.setPaymentStatus("PAID");
                             dbHelper.updateOrder(order); // Update the order status in the database
                         }
-
+                        for (CartItem item : selectedItems) {
+                         dbHelper.deleteCartItem(item.getCartID());
+                        }
                         Toast.makeText(requireContext(), "Payment Successful!", Toast.LENGTH_SHORT).show();
                     } catch (JSONException e) {
                         Toast.makeText(requireContext(), "Error parsing payment details: " + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();

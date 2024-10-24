@@ -24,6 +24,9 @@ import com.bumptech.glide.Glide;
 import com.example.myapplication.database_helper.DatabaseHelper;
 import com.example.myapplication.model.ColorInfo;
 import com.example.myapplication.model.Helmet;
+import com.example.myapplication.model.User;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,7 +48,7 @@ public class HelmetDetailActivity extends AppCompatActivity {
     private String selectedColor;
     private String selectedSize;
     private String generalPrice;
-
+    private int userId = 0;
     private int helmetID;
 
 
@@ -55,6 +58,11 @@ public class HelmetDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_helmet_detail);
 
         dbHelper = new DatabaseHelper(this);
+
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        String email = firebaseUser.getEmail();
+        User user = dbHelper.getUserByEmail(email);
+        userId = user.getId();
 
         helmetImageView = findViewById(R.id.productImageView);
         helmetNameTextView = findViewById(R.id.productNameTextView);
@@ -105,7 +113,7 @@ public class HelmetDetailActivity extends AppCompatActivity {
                 String imgUrl = helmet.getImageUrl();
                 double price = helmet.getPrice(); // Assuming price is part of the helmet
                 int stock = helmet.getStock(); // Assuming stock is part of the helmet
-
+                int id = helmet.getHelmetID();
                 // Update lowest and highest price
                 if (price < helmetLowestPrice) {
                     helmetLowestPrice = price;
@@ -115,7 +123,7 @@ public class HelmetDetailActivity extends AppCompatActivity {
                 }
 
                 // Create a SizeStock instance for the current size
-                ColorInfo.SizeStock sizeStock = new ColorInfo.SizeStock(size, stock,price);
+                ColorInfo.SizeStock sizeStock = new ColorInfo.SizeStock(id,price, stock,size);
 
                 // If the color does not exist in the map, create a new ColorInfo instance
                 if (!colorToSizeMap.containsKey(color)) {
@@ -149,8 +157,6 @@ public class HelmetDetailActivity extends AppCompatActivity {
 // Update price text view
             generalPrice ="$" + helmetLowestPrice + " - $" + helmetHighestPrice;
             helmetPriceTextView.setText(generalPrice);
-
-
 
             availableColors = new ArrayList<>(colorToSizeMap.keySet());
             // Load available colors and sizes
@@ -323,7 +329,7 @@ public class HelmetDetailActivity extends AppCompatActivity {
                 selectedSize = sizeStock.getSize();
                 // Check stock for the selected size
                 int stock = sizeStock.getStock();
-
+                helmetID = sizeStock.getId();
                 // Update stock display (optional)
                 stockTextView.setText("Stock: " + stock);
                 helmetPriceTextView.setText("$" + sizeStock.getPrice());
@@ -368,7 +374,7 @@ public class HelmetDetailActivity extends AppCompatActivity {
                 selectedColor,
                 1, // Default quantity is 1
                 Double.parseDouble(helmetPriceTextView.getText().toString().replace("$", "")),
-                1
+                userId
         );
         Toast.makeText(this, "Item added to cart", Toast.LENGTH_SHORT).show();
     }
