@@ -1,26 +1,71 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="8dp">
+    android:padding="8dp"
+    android:background="?attr/selectableItemBackground">
 
-    <TextView
-        android:id="@+id/txtHelmetName"
+    <!-- Helmet Image -->
+    <ImageView
+        android:id="@+id/imgHelmet"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginEnd="16dp"
+        android:scaleType="centerCrop"/>
+<!--        android:src="@drawable/ic_helmet_placeholder" -->
+
+    <!-- Helmet Details Container -->
+    <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="Helmet Name" />
+        android:orientation="vertical">
 
+        <!-- Helmet Name -->
+        <TextView
+            android:id="@+id/txtHelmetName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Helmet Name"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:textColor="@android:color/black" />
+
+        <!-- Helmet Size and Color -->
+        <TextView
+            android:id="@+id/txtHelmetSize"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Size: M, Color: Red"
+            android:textSize="14sp"
+            android:textColor="@android:color/darker_gray" />
+
+        <TextView
+            android:id="@+id/txtHelmetColor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Size: M, Color: Red"
+            android:textSize="14sp"
+            android:textColor="@android:color/darker_gray" />
+
+        <!-- Price -->
+        <TextView
+            android:id="@+id/txtPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Price: $49.99"
+            android:textSize="14sp"
+            android:textColor="@android:color/black" />
+    </LinearLayout>
+
+    <!-- Quantity -->
     <TextView
         android:id="@+id/txtQuantity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Quantity" />
-
-    <TextView
-        android:id="@+id/txtPrice"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Price" />
+        android:text="Qty: 1"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:gravity="end"
+        android:textColor="@android:color/black" />
 </LinearLayout>
