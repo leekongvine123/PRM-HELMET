@@ -465,7 +465,33 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             return order;
         }
         cursor.close();
+
         return null;
+    }
+
+    @SuppressLint("Range")
+    public List<Order> getOrdersByUserId(int userId) {
+        List<Order> orders = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String query = "SELECT * FROM " + TABLE_ORDERS + " WHERE " + COLUMN_ORDER_CUSTOMER_ID + " = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(userId)});
+
+        if (cursor.moveToFirst()) {
+            do {
+                Order order = new Order();
+                order.setOrderID(cursor.getInt(cursor.getColumnIndex(COLUMN_ORDER_ID)));
+                order.setCustomerID(cursor.getInt(cursor.getColumnIndex(COLUMN_ORDER_CUSTOMER_ID)));
+                order.setOrderDate(cursor.getString(cursor.getColumnIndex(COLUMN_ORDER_DATE)));
+                order.setTotalAmount(cursor.getDouble(cursor.getColumnIndex(COLUMN_ORDER_TOTAL_AMOUNT)));
+                order.setPaymentStatus(cursor.getString(cursor.getColumnIndex(COLUMN_ORDER_PAYMENT_STATUS)));
+
+                orders.add(order);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        return orders;
     }
 
     @SuppressLint("Range")
@@ -534,6 +560,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
         return orderDetails;
     }
+
 
     public int updateOrderDetail(OrderDetail orderDetail) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -1120,7 +1147,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         try {
             // Insert Order 1
-            orderValues.put(COLUMN_ORDER_CUSTOMER_ID, 1); // Assuming customerID 1 exists
+            orderValues.put(COLUMN_ORDER_CUSTOMER_ID, 4); // Assuming customerID 1 exists
             orderValues.put(COLUMN_ORDER_TOTAL_AMOUNT, 150.50);
             orderValues.put(COLUMN_ORDER_PAYMENT_STATUS, "Paid");
             long orderId1 = db.insertOrThrow(TABLE_ORDERS, null, orderValues); // Insert order 1 and get order ID
@@ -1141,7 +1168,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
             // Insert Order 2
             orderValues.clear();
-            orderValues.put(COLUMN_ORDER_CUSTOMER_ID, 2); // Assuming customerID 2 exists
+            orderValues.put(COLUMN_ORDER_CUSTOMER_ID, 4); // Assuming customerID 2 exists
             orderValues.put(COLUMN_ORDER_TOTAL_AMOUNT, 200.00);
             orderValues.put(COLUMN_ORDER_PAYMENT_STATUS, "Pending");
             long orderId2 = db.insertOrThrow(TABLE_ORDERS, null, orderValues); // Insert order 2 and get order ID
