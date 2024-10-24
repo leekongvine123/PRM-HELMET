@@ -44,7 +44,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
 
         // Retrieve the order details for this order and set up the nested RecyclerView
         List<OrderDetail> orderDetails = databaseHelper.getOrderDetailsByOrderId(order.getOrderID());
-        OrderDetailAdapter orderDetailAdapter = new OrderDetailAdapter(orderDetails);
+        OrderDetailAdapter orderDetailAdapter = new OrderDetailAdapter(orderDetails, databaseHelper);
         holder.recyclerViewOrderDetails.setLayoutManager(new LinearLayoutManager(holder.itemView.getContext()));
         holder.recyclerViewOrderDetails.setAdapter(orderDetailAdapter);
     }
