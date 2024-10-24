@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -27,6 +28,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText emailEditText, passwordEditText;
     private Button loginButton, registerButton, googleSignInButton;
     private FirebaseAuth mAuth;
+    private TextView signUpeText;
     private GoogleSignInClient googleSignInClient;
 
     @Override
@@ -34,11 +36,11 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        emailEditText = findViewById(R.id.email);
-        passwordEditText = findViewById(R.id.password);
-        loginButton = findViewById(R.id.login_button);
-        registerButton = findViewById(R.id.register_button);
-        googleSignInButton = findViewById(R.id.google_sign_in_button);
+        emailEditText = findViewById(R.id.et_email);
+        passwordEditText = findViewById(R.id.et_password);
+        loginButton = findViewById(R.id.btn_sign_in);
+        signUpeText = findViewById(R.id.tv_sign_up);
+        googleSignInButton = findViewById(R.id.btn_google_sign_in);
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -69,7 +71,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        registerButton.setOnClickListener(new View.OnClickListener() {
+        signUpeText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);

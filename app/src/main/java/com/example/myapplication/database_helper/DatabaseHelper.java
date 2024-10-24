@@ -23,7 +23,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "helmet_shop.db";
 
     // Phiên bản cơ sở dữ liệu
-    private static final int DATABASE_VERSION = 9;
+    private static final int DATABASE_VERSION = 11;
 
     // Tên các bảng
     private static final String TABLE_USERS = "Users";
@@ -1103,6 +1103,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             values.put(COLUMN_USER_PHONE, "09303030333");
             values.put(COLUMN_USER_ADDRESS, "342 Nguyen Thi Dang, Ho Chi Minh city");
             db.insertOrThrow(TABLE_USERS, null, values);
+
+
         } catch (Exception e) {
             // Handle exceptions (like UNIQUE constraint failures)
             e.printStackTrace();

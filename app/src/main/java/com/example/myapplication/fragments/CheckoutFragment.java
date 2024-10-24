@@ -23,6 +23,7 @@ import com.example.myapplication.R;
 import com.example.myapplication.adapter.CartAdapter;
 import com.example.myapplication.database_helper.DatabaseHelper;
 import com.example.myapplication.model.CartItem;
+import com.example.myapplication.model.Helmet;
 import com.example.myapplication.model.Order;
 import com.example.myapplication.model.OrderDetail;
 import com.example.myapplication.model.Payment;
@@ -140,6 +141,17 @@ public class CheckoutFragment extends Fragment {
         String amounts = String.format("%.2f", totalAmount);
         String productName = productNames.toString();
 
+        for (CartItem item : selectedItems) {
+            Helmet helmet = dbHelper.getHelmetById(item.getHelmetID());
+
+            // Check if helmet stock is 0
+            if (helmet.getStock() == 0) {
+                Toast.makeText(requireContext(), "Helmet " + helmet.getName() + " is out of stock!", Toast.LENGTH_SHORT).show();
+                return;  // Exit the loop if any helmet is out of stock
+            }
+        }
+
+
         // Step 3: Create an order with "Pending" status
         //
         Order newOrder = new Order(1, totalAmount, "Pending"); // Assuming userId is available
@@ -152,11 +164,11 @@ public class CheckoutFragment extends Fragment {
 
         }
 
-
         // Step 4: Create order details
         for (CartItem item : selectedItems) {
             OrderDetail orderDetail = new OrderDetail(orderId, item.getHelmetID(), item.getQuantity(), item.getPrice());
            dbHelper.addOrderDetail(orderDetail); // Add each order detail to the database
+            Helmet helmet = dbHelper.getHelmetById(item.getHelmetID());
         }
 
         // Step 5: Create a PayPal payment
@@ -199,6 +211,13 @@ public class CheckoutFragment extends Fragment {
                             order.setPaymentStatus("PAID");
                             dbHelper.updateOrder(order); // Update the order status in the database
                         }
+                        List<OrderDetail> orderDetails = dbHelper.getOrderDetailsByOrderId(orderId);
+                        for (OrderDetail item: orderDetails) {
+                            Helmet helmet = dbHelper.getHelmetById(item.getHelmetID());
+                            helmet.setStock(helmet.getStock()-1);
+                            dbHelper.updateHelmet(helmet);
+                        }
+
                         for (CartItem item : selectedItems) {
                          dbHelper.deleteCartItem(item.getCartID());
                         }

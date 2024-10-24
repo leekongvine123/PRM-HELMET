@@ -39,8 +39,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public void onMapReady(@NonNull GoogleMap googleMap) {
         this.gMap = googleMap;
 
-        LatLng mapChanh = new LatLng(12.580153, 107.862002);
-        this.gMap.addMarker(new MarkerOptions().position(mapChanh).title("Marker in nhà Chánh"));
+        LatLng mapChanh = new LatLng(10.8231, 106.6297);
+        this.gMap.addMarker(new MarkerOptions().position(mapChanh).title("HCM"));
         this.gMap.moveCamera(CameraUpdateFactory.newLatLng(mapChanh));
     }
 }
