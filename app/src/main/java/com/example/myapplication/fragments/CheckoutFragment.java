@@ -53,7 +53,7 @@ public class CheckoutFragment extends Fragment {
     FirebaseUser userFirebase = FirebaseAuth.getInstance().getCurrentUser();
     String clientId = "AXcM1ViW0yHvDxEks2rEp6JwtRk4Zrw9niI3hWGPRHKn967ROCIftzH3QDzVwzx87ihx9GTttcPfxaHp";
     int PAYPAL_REQUEST_CODE = 123;
-
+    private int orderId = 0;
     public static PayPalConfiguration configuration;
     public CheckoutFragment(List<CartItem> selectedItems, DatabaseHelper dbHelper) {
         this.selectedItems = selectedItems;
@@ -144,7 +144,6 @@ public class CheckoutFragment extends Fragment {
         //
         Order newOrder = new Order(1, totalAmount, "Pending"); // Assuming userId is available
 
-        int orderId = 0;
         try {
             orderId = dbHelper.addOrder(newOrder);
 
@@ -168,10 +167,10 @@ public class CheckoutFragment extends Fragment {
         PayPalPayment payPalPayment = new PayPalPayment(new BigDecimal(amounts), "USD", productName, PayPalPayment.PAYMENT_INTENT_SALE);
         Intent intent = new Intent(requireActivity(), PaymentActivity.class);
         intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, configuration);
-     //   intent.putExtra("orderId", orderId);
         intent.putExtra(PaymentActivity.EXTRA_PAYMENT, payPalPayment);
         // Start the payment activity
         startActivityForResult(intent, PAYPAL_REQUEST_CODE);
+
     }
 
 
@@ -182,7 +181,6 @@ public class CheckoutFragment extends Fragment {
 
         if (requestCode == PAYPAL_REQUEST_CODE) {
             // Retrieve the order ID from the intent if necessary
-            int orderId = data != null ? data.getIntExtra("orderId", 0) : 0;
 
             if (resultCode == Activity.RESULT_OK && data != null) {
                 PaymentConfirmation paymentConfirmation = data.getParcelableExtra(PaymentActivity.EXTRA_RESULT_CONFIRMATION);

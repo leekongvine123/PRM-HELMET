@@ -11,7 +11,7 @@
         android:id="@+id/backButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-         android:background="?attr/selectableItemBackgroundBorderless"
+        android:background="?attr/selectableItemBackgroundBorderless"
         android:src="@drawable/ic_back"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -38,8 +38,6 @@
         app:layout_constraintTop_toBottomOf="@id/backButton" />
 
     <!-- Product Name -->
-
-    <!-- Product Rating -->
     <TextView
         android:id="@+id/productNameTextView"
         android:layout_width="0dp"
@@ -55,89 +53,18 @@
 
     <!-- Product Description -->
 
-
     <!-- Color Label -->
-
-    <!-- Color Options -->
-
     <TextView
         android:id="@+id/productDescriptionTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:text="Built for natural motion, the Nike® Flex shoes"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/productNameTextView" />
-
-    <LinearLayout
-        android:id="@+id/colorOptionsLayout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/colorLabelTextView">
-
-    </LinearLayout>
-
-    <!-- Price -->
-    <!-- Size Label -->
-
-    <!-- Size Options -->
-
-    <TextView
-        android:id="@+id/priceTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="48dp"
-        android:text="$269.00"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sizeLabelTextView" />
-
-    <TextView
-        android:id="@+id/sizeLabelTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        android:text="Size:"
-        android:textSize="14sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/colorLabelTextView" />
-
-    <RadioGroup
-        android:id="@+id/sizeRadioGroup"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/sizeLabelTextView">
-
-    </RadioGroup>
-    <!-- Add to Cart Button -->
-
-    <Button
-        android:id="@+id/addToCartButton"
-        android:layout_width="274dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="52dp"
-        android:layout_marginTop="20dp"
-        android:backgroundTint="@color/teal_200"
-        android:drawableLeft="@drawable/ic_cart"
-        android:drawablePadding="8dp"
-        android:padding="12dp"
-        android:text="Add To Cart"
-        android:textColor="@android:color/white"
-        android:textSize="16sp"
-        android:enabled="false"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/priceTextView" />
 
     <TextView
         android:id="@+id/colorLabelTextView"
@@ -150,4 +77,87 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/productDescriptionTextView" />
 
+    <!-- Color Options -->
+    <LinearLayout
+        android:id="@+id/colorOptionsLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/colorLabelTextView"></LinearLayout>
+
+    <!-- Price -->
+
+    <!-- Stock Label -->
+
+    <!-- Size Label -->
+
+    <!-- Size Options -->
+
+    <TextView
+        android:id="@+id/priceTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="224dp"
+        android:text="$269.00"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/productImageView" />
+
+    <TextView
+        android:id="@+id/stockTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="11dp"
+        android:layout_marginBottom="8dp"
+        android:text="Unselected Sizes"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/colorLabelTextView"
+        app:layout_constraintTop_toBottomOf="@+id/productDescriptionTextView"
+        app:layout_constraintVertical_bias="1.0"
+        tools:layout_editor_absoluteX="0dp" />
+
+    <!-- Add to Cart Button -->
+
+    <TextView
+        android:id="@+id/sizeLabelTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="36dp"
+        android:text="Size:"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/colorLabelTextView" />
+
+    <RadioGroup
+        android:id="@+id/sizeRadioGroup"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/sizeLabelTextView"></RadioGroup>
+
+    <Button
+        android:id="@+id/addToCartButton"
+        android:layout_width="274dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="52dp"
+        android:layout_marginTop="280dp"
+        android:backgroundTint="@color/teal_200"
+        android:drawableLeft="@drawable/ic_cart"
+        android:drawablePadding="8dp"
+        android:enabled="false"
+        android:padding="12dp"
+        android:text="Add To Cart"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/productImageView" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -23,7 +23,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "helmet_shop.db";
 
     // Phiên bản cơ sở dữ liệu
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 7;
 
     // Tên các bảng
     private static final String TABLE_USERS = "Users";
@@ -280,6 +280,45 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         long newRowId = db.insert(TABLE_HELMETS, null, values);
         return newRowId;
     }
+
+    @SuppressLint("Range")
+    public List<Helmet> searchHelmetsByName(String name) {
+        List<Helmet> helmets = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        // SQL query to search helmets by name and get distinct helmets by product code
+        String query = "SELECT * FROM " + TABLE_HELMETS +
+                " WHERE " + COLUMN_HELMET_NAME + " LIKE ?" +
+                " AND " + COLUMN_HELMET_ID + " IN ( " +
+                "SELECT MIN(" + COLUMN_HELMET_ID + ") FROM " + TABLE_HELMETS +
+                " GROUP BY " + COLUMN_HELMET_PRODUCT_CODE + ")";
+
+        // Use wildcard in the search query
+        String[] selectionArgs = new String[]{"%" + name + "%"};
+
+        Cursor cursor = db.rawQuery(query, selectionArgs);
+        if (cursor.moveToFirst()) {
+            do {
+                Helmet helmet = new Helmet();
+                helmet.setProductCode(cursor.getString(cursor.getColumnIndex(COLUMN_HELMET_PRODUCT_CODE)));
+                helmet.setHelmetID(cursor.getInt(cursor.getColumnIndex(COLUMN_HELMET_ID)));
+                helmet.setName(cursor.getString(cursor.getColumnIndex(COLUMN_HELMET_NAME)));
+                helmet.setBrand(cursor.getString(cursor.getColumnIndex(COLUMN_HELMET_BRAND)));
+                helmet.setSize(cursor.getString(cursor.getColumnIndex(COLUMN_HELMET_SIZE)));
+                helmet.setColor(cursor.getString(cursor.getColumnIndex(COLUMN_HELMET_COLOR)));
+                helmet.setDescription(cursor.getString(cursor.getColumnIndex(COLUMN_HELMET_DESCRIPTION)));
+                helmet.setPrice(cursor.getDouble(cursor.getColumnIndex(COLUMN_HELMET_PRICE)));
+                helmet.setStock(cursor.getInt(cursor.getColumnIndex(COLUMN_HELMET_STOCK)));
+                helmet.setImageUrl(cursor.getString(cursor.getColumnIndex(COLUMN_HELMET_IMAGE_URL)));
+                helmet.setCreatedAt(cursor.getString(cursor.getColumnIndex(COLUMN_HELMET_CREATED_AT)));
+                helmets.add(helmet);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return helmets;
+    }
+
+
 
     @SuppressLint("Range")
     public Helmet getHelmetById(int helmetId) {
@@ -727,16 +766,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String productCode2 = "P002"; // Product code for Green helmet
         String productCode3 = "P003"; // Product code for Yellow helmet
         String productCode4 = "P004"; // Product code for Black helmet
+        String productCode5 = "P005"; // Product code for Black helmet
+
 
         // Sample data 1
-        values.put(COLUMN_HELMET_NAME, "Helmet BLACK");
-        values.put(COLUMN_HELMET_BRAND, "Brand A");
+        values.put(COLUMN_HELMET_NAME, "Helmet Royal");
+        values.put(COLUMN_HELMET_BRAND, "Brand Royal");
         values.put(COLUMN_HELMET_SIZE, "M");
         values.put(COLUMN_HELMET_COLOR, "Red");
-        values.put(COLUMN_HELMET_DESCRIPTION, "Description for Helmet A");
+        values.put(COLUMN_HELMET_DESCRIPTION, "Royal Helmet for knight");
         values.put(COLUMN_HELMET_PRICE, 49.99);
         values.put(COLUMN_HELMET_STOCK, 10);
-        values.put(COLUMN_HELMET_IMAGE_URL, "https://thegioimubaohiem.vn/ckfinder/userfiles/images/products/76EQzx_MG_9681.jpg");
+        values.put(COLUMN_HELMET_IMAGE_URL, "https://thegioimubaohiem.vn/ckfinder/userfiles/images/products/8ocZp6CmSw3f_MG_9437.jpg");
         values.put(COLUMN_HELMET_CREATED_AT, "2024-09-26");
         values.put(COLUMN_HELMET_PRODUCT_CODE, productCode1); // Set product code
         db.insert(TABLE_HELMETS, null, values);
@@ -796,7 +837,222 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_HELMET_CREATED_AT, "2024-09-26");
         values.put(COLUMN_HELMET_PRODUCT_CODE, productCode1); // Different product code
         db.insert(TABLE_HELMETS, null, values);
+
+
+//product code 2
+        // Sample data 1
+        values.put(COLUMN_HELMET_NAME, "Helmet Dragon");
+        values.put(COLUMN_HELMET_BRAND, "Brand Dragon");
+        values.put(COLUMN_HELMET_SIZE, "M");
+        values.put(COLUMN_HELMET_COLOR, "Blue");
+        values.put(COLUMN_HELMET_DESCRIPTION, "Dragon Helmet for dragon slayer");
+        values.put(COLUMN_HELMET_PRICE, 49.99);
+        values.put(COLUMN_HELMET_STOCK, 10);
+        values.put(COLUMN_HELMET_IMAGE_URL, "https://thegioimubaohiem.vn/ckfinder/userfiles/images/products/76EQzx_MG_9681.jpg");
+        values.put(COLUMN_HELMET_CREATED_AT, "2024-09-26");
+        values.put(COLUMN_HELMET_PRODUCT_CODE, productCode2); // Set product code
+        db.insert(TABLE_HELMETS, null, values);
+
+        // Sample data 2
+        values.clear();
+        values.put(COLUMN_HELMET_NAME, "Helmet B");
+        values.put(COLUMN_HELMET_BRAND, "Brand B");
+        values.put(COLUMN_HELMET_SIZE, "L");
+        values.put(COLUMN_HELMET_COLOR, "Blue");
+        values.put(COLUMN_HELMET_DESCRIPTION, "Description for Helmet B");
+        values.put(COLUMN_HELMET_PRICE, 59.99);
+        values.put(COLUMN_HELMET_STOCK, 15);
+        values.put(COLUMN_HELMET_IMAGE_URL, "https://thegioimubaohiem.vn/ckfinder/userfiles/images/products/76EQzx_MG_9681.jpg");
+        values.put(COLUMN_HELMET_CREATED_AT, "2024-09-26");
+        values.put(COLUMN_HELMET_PRODUCT_CODE, productCode2); // Set same product code
+        db.insert(TABLE_HELMETS, null, values);
+
+        // Sample data 3
+        values.clear();
+        values.put(COLUMN_HELMET_NAME, "Helmet C");
+        values.put(COLUMN_HELMET_BRAND, "Brand C");
+        values.put(COLUMN_HELMET_SIZE, "S");
+        values.put(COLUMN_HELMET_COLOR, "Red");
+        values.put(COLUMN_HELMET_DESCRIPTION, "Description for Helmet C");
+        values.put(COLUMN_HELMET_PRICE, 39.99);
+        values.put(COLUMN_HELMET_STOCK, 5);
+        values.put(COLUMN_HELMET_IMAGE_URL, "https://thegioimubaohiem.vn/ckfinder/userfiles/images/products/8ocZp6CmSw3f_MG_9437.jpg");
+        values.put(COLUMN_HELMET_CREATED_AT, "2024-09-26");
+        values.put(COLUMN_HELMET_PRODUCT_CODE, productCode2); // Different product code
+        db.insert(TABLE_HELMETS, null, values);
+
+        // Sample data 4
+        values.clear();
+        values.put(COLUMN_HELMET_NAME, "Helmet D");
+        values.put(COLUMN_HELMET_BRAND, "Brand D");
+        values.put(COLUMN_HELMET_SIZE, "XL");
+        values.put(COLUMN_HELMET_COLOR, "Green");
+        values.put(COLUMN_HELMET_DESCRIPTION, "Description for Helmet D");
+        values.put(COLUMN_HELMET_PRICE, 69.99);
+        values.put(COLUMN_HELMET_STOCK, 8);
+        values.put(COLUMN_HELMET_IMAGE_URL, "https://thegioimubaohiem.vn/ckfinder/userfiles/images/products/m8EBwaM139-TRON%20(1).jpg");
+        values.put(COLUMN_HELMET_CREATED_AT, "2024-09-26");
+        values.put(COLUMN_HELMET_PRODUCT_CODE, productCode2); // Different product code
+        db.insert(TABLE_HELMETS, null, values);
+
+        // Sample data 5
+        values.clear();
+        values.put(COLUMN_HELMET_NAME, "Helmet E");
+        values.put(COLUMN_HELMET_BRAND, "Brand E");
+        values.put(COLUMN_HELMET_SIZE, "M");
+        values.put(COLUMN_HELMET_COLOR, "Green");
+        values.put(COLUMN_HELMET_DESCRIPTION, "Description for Helmet E");
+        values.put(COLUMN_HELMET_PRICE, 79.99);
+        values.put(COLUMN_HELMET_STOCK, 12);
+        values.put(COLUMN_HELMET_IMAGE_URL, "https://thegioimubaohiem.vn/ckfinder/userfiles/images/products/m8EBwaM139-TRON%20(1).jpg");
+        values.put(COLUMN_HELMET_CREATED_AT, "2024-09-26");
+        values.put(COLUMN_HELMET_PRODUCT_CODE, productCode2); // Different product code
+        db.insert(TABLE_HELMETS, null, values);
+
+    //product code 3
+        // Sample data 1
+        values.put(COLUMN_HELMET_NAME, "Helmet Cristal");
+        values.put(COLUMN_HELMET_BRAND, "Brand A");
+        values.put(COLUMN_HELMET_SIZE, "M");
+        values.put(COLUMN_HELMET_COLOR, "Green");
+        values.put(COLUMN_HELMET_DESCRIPTION, "Cristal Helmet for Cristalant");
+        values.put(COLUMN_HELMET_PRICE, 49.99);
+        values.put(COLUMN_HELMET_STOCK, 10);
+        values.put(COLUMN_HELMET_IMAGE_URL, "https://thegioimubaohiem.vn/ckfinder/userfiles/images/products/m8EBwaM139-TRON%20(1).jpg");
+        values.put(COLUMN_HELMET_CREATED_AT, "2024-09-26");
+        values.put(COLUMN_HELMET_PRODUCT_CODE, productCode3); // Set product code
+        db.insert(TABLE_HELMETS, null, values);
+
+        // Sample data 2
+        values.clear();
+        values.put(COLUMN_HELMET_NAME, "Helmet B");
+        values.put(COLUMN_HELMET_BRAND, "Brand B");
+        values.put(COLUMN_HELMET_SIZE, "L");
+        values.put(COLUMN_HELMET_COLOR, "Blue");
+        values.put(COLUMN_HELMET_DESCRIPTION, "Description for Helmet B");
+        values.put(COLUMN_HELMET_PRICE, 59.99);
+        values.put(COLUMN_HELMET_STOCK, 15);
+        values.put(COLUMN_HELMET_IMAGE_URL, "https://thegioimubaohiem.vn/ckfinder/userfiles/images/products/76EQzx_MG_9681.jpg");
+        values.put(COLUMN_HELMET_CREATED_AT, "2024-09-26");
+        values.put(COLUMN_HELMET_PRODUCT_CODE, productCode3); // Set same product code
+        db.insert(TABLE_HELMETS, null, values);
+
+        // Sample data 3
+        values.clear();
+        values.put(COLUMN_HELMET_NAME, "Helmet C");
+        values.put(COLUMN_HELMET_BRAND, "Brand C");
+        values.put(COLUMN_HELMET_SIZE, "S");
+        values.put(COLUMN_HELMET_COLOR, "Red");
+        values.put(COLUMN_HELMET_DESCRIPTION, "Description for Helmet C");
+        values.put(COLUMN_HELMET_PRICE, 39.99);
+        values.put(COLUMN_HELMET_STOCK, 5);
+        values.put(COLUMN_HELMET_IMAGE_URL, "https://thegioimubaohiem.vn/ckfinder/userfiles/images/products/8ocZp6CmSw3f_MG_9437.jpg");
+        values.put(COLUMN_HELMET_CREATED_AT, "2024-09-26");
+        values.put(COLUMN_HELMET_PRODUCT_CODE, productCode3); // Different product code
+        db.insert(TABLE_HELMETS, null, values);
+
+        // Sample data 4
+        values.clear();
+        values.put(COLUMN_HELMET_NAME, "Helmet Galaxy");
+        values.put(COLUMN_HELMET_BRAND, "Brand D");
+        values.put(COLUMN_HELMET_SIZE, "XL");
+        values.put(COLUMN_HELMET_COLOR, "Green");
+        values.put(COLUMN_HELMET_DESCRIPTION, "Helmet for someone from galaxy");
+        values.put(COLUMN_HELMET_PRICE, 69.99);
+        values.put(COLUMN_HELMET_STOCK, 8);
+        values.put(COLUMN_HELMET_IMAGE_URL, "https://thegioimubaohiem.vn/ckfinder/userfiles/images/products/m8EBwaM139-TRON%20(1).jpg");
+        values.put(COLUMN_HELMET_CREATED_AT, "2024-09-26");
+        values.put(COLUMN_HELMET_PRODUCT_CODE, productCode3); // Different product code
+        db.insert(TABLE_HELMETS, null, values);
+
+        // Sample data 5
+        values.clear();
+        values.put(COLUMN_HELMET_NAME, "Helmet E");
+        values.put(COLUMN_HELMET_BRAND, "Brand E");
+        values.put(COLUMN_HELMET_SIZE, "M");
+        values.put(COLUMN_HELMET_COLOR, "Green");
+        values.put(COLUMN_HELMET_DESCRIPTION, "Description for Helmet E");
+        values.put(COLUMN_HELMET_PRICE, 79.99);
+        values.put(COLUMN_HELMET_STOCK, 12);
+        values.put(COLUMN_HELMET_IMAGE_URL, "https://thegioimubaohiem.vn/ckfinder/userfiles/images/products/m8EBwaM139-TRON%20(1).jpg");
+        values.put(COLUMN_HELMET_CREATED_AT, "2024-09-26");
+        values.put(COLUMN_HELMET_PRODUCT_CODE, productCode3); // Different product code
+        db.insert(TABLE_HELMETS, null, values);
+
+
+        //product code 4
+        // Sample data 1
+        values.put(COLUMN_HELMET_NAME, "Helmet Sun");
+        values.put(COLUMN_HELMET_BRAND, "Brand Sun");
+        values.put(COLUMN_HELMET_SIZE, "M");
+        values.put(COLUMN_HELMET_COLOR, "Yellow");
+        values.put(COLUMN_HELMET_DESCRIPTION, "Helmet for who come from sun");
+        values.put(COLUMN_HELMET_PRICE, 49.99);
+        values.put(COLUMN_HELMET_STOCK, 10);
+        values.put(COLUMN_HELMET_IMAGE_URL, "https://thegioimubaohiem.vn/ckfinder/userfiles/images/products/ePkvgN_MG_6211b.png");
+        values.put(COLUMN_HELMET_CREATED_AT, "2024-09-26");
+        values.put(COLUMN_HELMET_PRODUCT_CODE, productCode4); // Set product code
+        db.insert(TABLE_HELMETS, null, values);
+
+        // Sample data 2
+        values.clear();
+        values.put(COLUMN_HELMET_NAME, "Helmet B");
+        values.put(COLUMN_HELMET_BRAND, "Brand B");
+        values.put(COLUMN_HELMET_SIZE, "L");
+        values.put(COLUMN_HELMET_COLOR, "Blue");
+        values.put(COLUMN_HELMET_DESCRIPTION, "Description for Helmet B");
+        values.put(COLUMN_HELMET_PRICE, 59.99);
+        values.put(COLUMN_HELMET_STOCK, 15);
+        values.put(COLUMN_HELMET_IMAGE_URL, "https://thegioimubaohiem.vn/ckfinder/userfiles/images/products/76EQzx_MG_9681.jpg");
+        values.put(COLUMN_HELMET_CREATED_AT, "2024-09-26");
+        values.put(COLUMN_HELMET_PRODUCT_CODE, productCode4); // Set same product code
+        db.insert(TABLE_HELMETS, null, values);
+
+        // Sample data 3
+        values.clear();
+        values.put(COLUMN_HELMET_NAME, "Helmet C");
+        values.put(COLUMN_HELMET_BRAND, "Brand C");
+        values.put(COLUMN_HELMET_SIZE, "S");
+        values.put(COLUMN_HELMET_COLOR, "Red");
+        values.put(COLUMN_HELMET_DESCRIPTION, "Description for Helmet C");
+        values.put(COLUMN_HELMET_PRICE, 39.99);
+        values.put(COLUMN_HELMET_STOCK, 5);
+        values.put(COLUMN_HELMET_IMAGE_URL, "https://thegioimubaohiem.vn/ckfinder/userfiles/images/products/8ocZp6CmSw3f_MG_9437.jpg");
+        values.put(COLUMN_HELMET_CREATED_AT, "2024-09-26");
+        values.put(COLUMN_HELMET_PRODUCT_CODE, productCode4); // Different product code
+        db.insert(TABLE_HELMETS, null, values);
+
+        // Sample data 4
+        values.clear();
+        values.put(COLUMN_HELMET_NAME, "Helmet D");
+        values.put(COLUMN_HELMET_BRAND, "Brand D");
+        values.put(COLUMN_HELMET_SIZE, "XL");
+        values.put(COLUMN_HELMET_COLOR, "Green");
+        values.put(COLUMN_HELMET_DESCRIPTION, "Description for Helmet D");
+        values.put(COLUMN_HELMET_PRICE, 69.99);
+        values.put(COLUMN_HELMET_STOCK, 8);
+        values.put(COLUMN_HELMET_IMAGE_URL, "https://thegioimubaohiem.vn/ckfinder/userfiles/images/products/m8EBwaM139-TRON%20(1).jpg");
+        values.put(COLUMN_HELMET_CREATED_AT, "2024-09-26");
+        values.put(COLUMN_HELMET_PRODUCT_CODE, productCode4); // Different product code
+        db.insert(TABLE_HELMETS, null, values);
+
+        // Sample data 5
+        values.clear();
+        values.put(COLUMN_HELMET_NAME, "Helmet E");
+        values.put(COLUMN_HELMET_BRAND, "Brand E");
+        values.put(COLUMN_HELMET_SIZE, "M");
+        values.put(COLUMN_HELMET_COLOR, "Green");
+        values.put(COLUMN_HELMET_DESCRIPTION, "Description for Helmet E");
+        values.put(COLUMN_HELMET_PRICE, 79.99);
+        values.put(COLUMN_HELMET_STOCK, 12);
+        values.put(COLUMN_HELMET_IMAGE_URL, "https://thegioimubaohiem.vn/ckfinder/userfiles/images/products/m8EBwaM139-TRON%20(1).jpg");
+        values.put(COLUMN_HELMET_CREATED_AT, "2024-09-26");
+        values.put(COLUMN_HELMET_PRODUCT_CODE, productCode4); // Different product code
+        db.insert(TABLE_HELMETS, null, values);
     }
+
+
+
 
     private void insertSampleUsers(SQLiteDatabase db) {
         ContentValues values = new ContentValues();

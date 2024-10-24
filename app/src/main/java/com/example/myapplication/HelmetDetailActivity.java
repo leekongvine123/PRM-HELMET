@@ -1,6 +1,5 @@
 package com.example.myapplication;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -9,10 +8,8 @@ import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RoundRectShape;
 import android.os.Bundle;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
@@ -25,38 +22,29 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.myapplication.database_helper.DatabaseHelper;
+import com.example.myapplication.model.ColorInfo;
 import com.example.myapplication.model.Helmet;
-import com.paypal.android.sdk.payments.PayPalConfiguration;
-import com.paypal.android.sdk.payments.PayPalPayment;
-import com.paypal.android.sdk.payments.PayPalService;
-import com.paypal.android.sdk.payments.PaymentActivity;
-import com.paypal.android.sdk.payments.PaymentConfirmation;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import androidx.fragment.app.FragmentActivity;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 public class HelmetDetailActivity extends AppCompatActivity {
 
     private ImageView helmetImageView, backBtn;
-    private TextView helmetNameTextView, helmetPriceTextView, helmetDescriptionTextView;
+    private TextView helmetNameTextView, helmetPriceTextView, helmetDescriptionTextView, stockTextView;
     private LinearLayout colorOptionsLayout;
     private RadioGroup sizeRadioGroup;
     private Button addToCartButton;
 
     private List<String> availableColors;
-    private Map<String, Pair<List<String>, String>> colorToSizeMap;
+    private Map<String, ColorInfo> colorToSizeMap;
     private DatabaseHelper dbHelper;
     private String selectedColor;
     private String selectedSize;
+    private String generalPrice;
 
     private int helmetID;
 
@@ -72,6 +60,7 @@ public class HelmetDetailActivity extends AppCompatActivity {
         helmetNameTextView = findViewById(R.id.productNameTextView);
         helmetPriceTextView = findViewById(R.id.priceTextView);
         helmetDescriptionTextView = findViewById(R.id.productDescriptionTextView);
+        stockTextView = findViewById(R.id.stockTextView);
         colorOptionsLayout = findViewById(R.id.colorOptionsLayout);
         sizeRadioGroup = findViewById(R.id.sizeRadioGroup);
         addToCartButton = findViewById(R.id.addToCartButton);
@@ -99,26 +88,69 @@ public class HelmetDetailActivity extends AppCompatActivity {
             String imageUrl = bundle.getString("helmetImageUrl");
 
             helmetNameTextView.setText(helmetName);
-            helmetPriceTextView.setText("$" + helmetPrice.toString());
             helmetDescriptionTextView.setText(helmetDescription);
 
             Glide.with(this).load(imageUrl).into(helmetImageView);
 
             // Fetch helmets by product code to get all colors and sizes
+            // Assuming you have a method to fetch helmets
             List<Helmet> helmets = dbHelper.getHelmetsByProductCode(productCode);
 
-            // Organize helmets by color and size
             colorToSizeMap = new HashMap<>();
+            double helmetLowestPrice = Double.MAX_VALUE; // Initialize to max value
+            double helmetHighestPrice = Double.MIN_VALUE; // Initialize to min value
+
             for (Helmet helmet : helmets) {
                 String color = helmet.getColor();
                 String size = helmet.getSize();
                 String imgUrl = helmet.getImageUrl();
+                double price = helmet.getPrice(); // Assuming price is part of the helmet
+                int stock = helmet.getStock(); // Assuming stock is part of the helmet
 
-                if (!colorToSizeMap.containsKey(color)) {
-                    colorToSizeMap.put(color, new Pair<>(new ArrayList<>(), imgUrl));
+                // Update lowest and highest price
+                if (price < helmetLowestPrice) {
+                    helmetLowestPrice = price;
                 }
-                colorToSizeMap.get(color).first.add(size);
+                if (price > helmetHighestPrice) {
+                    helmetHighestPrice = price;
+                }
+
+                // Create a SizeStock instance for the current size
+                ColorInfo.SizeStock sizeStock = new ColorInfo.SizeStock(size, stock,price);
+
+                // If the color does not exist in the map, create a new ColorInfo instance
+                if (!colorToSizeMap.containsKey(color)) {
+                    List<ColorInfo.SizeStock> sizeStocks = new ArrayList<>();
+                    sizeStocks.add(sizeStock);
+                    ColorInfo colorInfo = new ColorInfo(sizeStocks, imgUrl);
+                    colorInfo.setColor(color);
+                    colorToSizeMap.put(color, colorInfo);
+                } else {
+                    // Add the sizeStock to the existing ColorInfo instance
+                    ColorInfo colorInfo = colorToSizeMap.get(color);
+
+                    // Check if the size already exists for this color
+                    boolean sizeExists = false;
+                    for (ColorInfo.SizeStock existingSizeStock : colorInfo.getSizeStocks()) {
+                        if (existingSizeStock.getSize().equals(size)) {
+                            // If size exists, update the stock (optional)
+                            existingSizeStock.setStock(existingSizeStock.getStock() + stock); // Accumulate stock
+                            sizeExists = true;
+                            break;
+                        }
+                    }
+
+                    // If the size does not exist, add it
+                    if (!sizeExists) {
+                        colorInfo.getSizeStocks().add(sizeStock);
+                    }
+                }
             }
+
+// Update price text view
+            generalPrice ="$" + helmetLowestPrice + " - $" + helmetHighestPrice;
+            helmetPriceTextView.setText(generalPrice);
+
 
 
             availableColors = new ArrayList<>(colorToSizeMap.keySet());
@@ -168,6 +200,9 @@ public class HelmetDetailActivity extends AppCompatActivity {
                     break;
                 case "yellow":
                     backgroundColor = Color.YELLOW;
+                    break;
+                case "green":
+                    backgroundColor = Color.GREEN;
                     break;
                 // Add more cases for additional colors
                 default:
@@ -244,6 +279,9 @@ public class HelmetDetailActivity extends AppCompatActivity {
                 case "blue":
                     originalColor = Color.BLUE;
                     break;
+                case "yellow":
+                    originalColor = Color.GREEN;
+                    break;
                 case "green":
                     originalColor = Color.GREEN;
                     break;
@@ -263,27 +301,50 @@ public class HelmetDetailActivity extends AppCompatActivity {
         selectedColor = color;
         sizeRadioGroup.removeAllViews();
 
-        // Get the available sizes and image URL for the selected color
-        Pair<List<String>, String> sizesAndImage = colorToSizeMap.get(selectedColor);
-        List<String> availableSizes = sizesAndImage.first;
-        String imageUrl = sizesAndImage.second;
+        // Get the ColorInfo for the selected color
+        ColorInfo colorInfo = colorToSizeMap.get(selectedColor);
+        List<ColorInfo.SizeStock> sizeStocks = colorInfo.getSizeStocks();
+        String imageUrl = colorInfo.getImageUrl();
+
+        helmetPriceTextView.setText(generalPrice);
 
         // Load the image based on the selected color
         Glide.with(this).load(imageUrl).into(helmetImageView);
 
-        for (String size : availableSizes) {
+        // Set the price
+        stockTextView.setText("Unselected Sizes");
+        // Populate size options
+        for (ColorInfo.SizeStock sizeStock : sizeStocks) {
             RadioButton sizeButton = new RadioButton(HelmetDetailActivity.this);
-            sizeButton.setText(size);
+            sizeButton.setText(sizeStock.getSize());
             sizeRadioGroup.addView(sizeButton);
 
+            // Add click listener for size selection
             sizeButton.setOnClickListener(v -> {
-                selectedSize = size;
+                selectedSize = sizeStock.getSize();
+                // Check stock for the selected size
+                int stock = sizeStock.getStock();
+
+                // Update stock display (optional)
+                stockTextView.setText("Stock: " + stock);
+                helmetPriceTextView.setText("$" + sizeStock.getPrice());
+
+                // Enable or disable the Add to Cart button based on stock
+                addToCartButton.setEnabled(stock > 0);
+
                 checkSelections();
             });
         }
 
+        // Disable Add to Cart button if no sizes are available
+        boolean hasAvailableSize = sizeStocks.stream().anyMatch(sizeStock -> sizeStock.getStock() > 0);
+        addToCartButton.setEnabled(hasAvailableSize);
+
         updateColorPreview(selectedColor, colorView);
     }
+
+
+
 
 
     private void checkSelections() {

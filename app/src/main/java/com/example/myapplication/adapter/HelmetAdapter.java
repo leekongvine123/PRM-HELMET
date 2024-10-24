@@ -1,7 +1,7 @@
 package com.example.myapplication.adapter;
+
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +22,7 @@ public class HelmetAdapter extends RecyclerView.Adapter<HelmetAdapter.ViewHolder
 
     private List<Helmet> helmetList;
     private Context context;
+
     public HelmetAdapter(List<Helmet> helmetList, Context context) {
         this.helmetList = helmetList;
         this.context = context;
@@ -40,10 +41,11 @@ public class HelmetAdapter extends RecyclerView.Adapter<HelmetAdapter.ViewHolder
         holder.nameTextView.setText(helmet.getName());
         holder.brandTextView.setText(helmet.getBrand());
         holder.priceTextView.setText("$" + helmet.getPrice());
-        // Sử dụng Glide để tải hình ảnh
+
+        // Handle item click
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(context, HelmetDetailActivity.class);
-            intent.putExtra("productCode",helmet.getProductCode());
+            intent.putExtra("productCode", helmet.getProductCode());
             intent.putExtra("helmetID", helmet.getHelmetID());
             intent.putExtra("helmetName", helmet.getName());
             intent.putExtra("helmetPrice", helmet.getPrice());
@@ -51,13 +53,20 @@ public class HelmetAdapter extends RecyclerView.Adapter<HelmetAdapter.ViewHolder
             intent.putExtra("helmetImageUrl", helmet.getImageUrl());
             context.startActivity(intent);
         });
-        Glide.with(holder.itemView.getContext()).load(helmet.getImageUrl()).into(holder.imageView);
 
+        // Use Glide to load the image
+        Glide.with(holder.itemView.getContext()).load(helmet.getImageUrl()).into(holder.imageView);
     }
 
     @Override
     public int getItemCount() {
         return helmetList.size();
+    }
+
+    // Method to update the list of helmets (used for search functionality)
+    public void updateList(List<Helmet> newList) {
+        helmetList = newList;
+        notifyDataSetChanged();  // Notify the adapter to refresh the RecyclerView
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
