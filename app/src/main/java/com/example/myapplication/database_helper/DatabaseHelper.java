@@ -211,7 +211,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @SuppressLint("Range")
     public User getUserByEmail(String userEmail) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query(TABLE_USERS, null, COLUMN_USER_EMAIL+ " = ?", new String[]{String.valueOf(userEmail)}, null, null, null);
+//        Cursor cursor = db.query(TABLE_USERS, null, COLUMN_USER_EMAIL+ " = ?", new String[]{String.valueOf(userEmail)}, null, null, null);
+        Cursor cursor = db.rawQuery("SELECT * FROM Users WHERE Email = ?", new String[]{String.valueOf(userEmail)});
+
         if (cursor != null && cursor.moveToFirst()) {
             User user = new User();
             user.setId(cursor.getInt(cursor.getColumnIndex(COLUMN_USER_ID)));
@@ -823,6 +825,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             values.put(COLUMN_USER_EMAIL, "alice@example.com");
             values.put(COLUMN_USER_PHONE, "543216789");
             values.put(COLUMN_USER_ADDRESS, "789 Boulevard, City, Country");
+
+            values.clear();
+            values.put(COLUMN_USER_NAME, "Le Huu Cuong");
+            values.put(COLUMN_USER_EMAIL, "cuong@gmail.com");
+            values.put(COLUMN_USER_PHONE, "09977095127");
+            values.put(COLUMN_USER_ADDRESS, "342 Nguyen Thi Dang, Ho Chi Minh city");
+
+            values.clear();
+            values.put(COLUMN_USER_NAME, "Le Huu Cuong");
+            values.put(COLUMN_USER_EMAIL, "lehuucuong270603@gmail.com");
+            values.put(COLUMN_USER_PHONE, "09977095127");
+            values.put(COLUMN_USER_ADDRESS, "342 Nguyen Thi Dang, Ho Chi Minh city");
             db.insertOrThrow(TABLE_USERS, null, values);
         } catch (Exception e) {
             // Handle exceptions (like UNIQUE constraint failures)

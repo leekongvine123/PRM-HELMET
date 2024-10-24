@@ -52,6 +52,8 @@ public class ProfileFragment extends Fragment {
         // Get current user data from database
         FirebaseUser user1 = FirebaseAuth.getInstance().getCurrentUser();
 
+        String email = user1.getEmail();
+
         User user = databaseHelper.getUserByEmail(user1.getEmail());
         if (user != null) {
             nameTextView.setText("Name: "+user.getName());
