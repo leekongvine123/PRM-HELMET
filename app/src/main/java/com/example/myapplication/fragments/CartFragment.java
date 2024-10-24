@@ -28,7 +28,10 @@ import com.example.myapplication.R;
 import com.example.myapplication.adapter.CartAdapter;
 import com.example.myapplication.database_helper.DatabaseHelper;
 import com.example.myapplication.model.CartItem;
+import com.example.myapplication.model.User;
 import com.google.android.gms.common.api.Response;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +59,12 @@ public class CartFragment extends Fragment {
 
         dbHelper = new DatabaseHelper(requireContext());
 
-        cartItems = dbHelper.getCartItemsByUser(1);
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        String email = firebaseUser.getEmail();
+        User user = dbHelper.getUserByEmail(email);
+
+
+        cartItems = dbHelper.getCartItemsByUser(user.getId());
 
         for (CartItem cart:
         cartItems) {

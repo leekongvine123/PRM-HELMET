@@ -825,17 +825,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             values.put(COLUMN_USER_EMAIL, "alice@example.com");
             values.put(COLUMN_USER_PHONE, "543216789");
             values.put(COLUMN_USER_ADDRESS, "789 Boulevard, City, Country");
+            db.insertOrThrow(TABLE_USERS, null, values);
 
             values.clear();
             values.put(COLUMN_USER_NAME, "Le Huu Cuong");
             values.put(COLUMN_USER_EMAIL, "cuong@gmail.com");
             values.put(COLUMN_USER_PHONE, "09977095127");
             values.put(COLUMN_USER_ADDRESS, "342 Nguyen Thi Dang, Ho Chi Minh city");
+            db.insertOrThrow(TABLE_USERS, null, values);
 
             values.clear();
             values.put(COLUMN_USER_NAME, "Le Huu Cuong");
             values.put(COLUMN_USER_EMAIL, "lehuucuong270603@gmail.com");
             values.put(COLUMN_USER_PHONE, "09977095127");
+            values.put(COLUMN_USER_ADDRESS, "342 Nguyen Thi Dang, Ho Chi Minh city");
+            db.insertOrThrow(TABLE_USERS, null, values);
+
+            values.clear();
+            values.put(COLUMN_USER_NAME, "Le Cong Vinh");
+            values.put(COLUMN_USER_EMAIL, "congvinhdt1223@gmail.com");
+            values.put(COLUMN_USER_PHONE, "09303030333");
             values.put(COLUMN_USER_ADDRESS, "342 Nguyen Thi Dang, Ho Chi Minh city");
             db.insertOrThrow(TABLE_USERS, null, values);
         } catch (Exception e) {
