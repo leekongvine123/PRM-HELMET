@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -41,9 +42,19 @@ public class HelmetAdapter extends RecyclerView.Adapter<HelmetAdapter.ViewHolder
         holder.nameTextView.setText(helmet.getName());
         holder.brandTextView.setText(helmet.getBrand());
         holder.priceTextView.setText("$" + helmet.getPrice());
-
+        holder.brandChip.setText(helmet.getBrand().replace("Brand",""));
         // Handle item click
         holder.itemView.setOnClickListener(v -> {
+            Intent intent = new Intent(context, HelmetDetailActivity.class);
+            intent.putExtra("productCode", helmet.getProductCode());
+            intent.putExtra("helmetID", helmet.getHelmetID());
+            intent.putExtra("helmetName", helmet.getName());
+            intent.putExtra("helmetPrice", helmet.getPrice());
+            intent.putExtra("helmetDescription", helmet.getDescription());
+            intent.putExtra("helmetImageUrl", helmet.getImageUrl());
+            context.startActivity(intent);
+        });
+        holder.buyButton.setOnClickListener(v -> {
             Intent intent = new Intent(context, HelmetDetailActivity.class);
             intent.putExtra("productCode", helmet.getProductCode());
             intent.putExtra("helmetID", helmet.getHelmetID());
@@ -74,6 +85,8 @@ public class HelmetAdapter extends RecyclerView.Adapter<HelmetAdapter.ViewHolder
         public TextView nameTextView;
         public TextView brandTextView;
         public TextView priceTextView;
+        public  TextView brandChip;
+        public Button buyButton;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -81,6 +94,8 @@ public class HelmetAdapter extends RecyclerView.Adapter<HelmetAdapter.ViewHolder
             nameTextView = itemView.findViewById(R.id.nameTextView);
             brandTextView = itemView.findViewById(R.id.brandTextView);
             priceTextView = itemView.findViewById(R.id.priceTextView);
+            brandChip = itemView.findViewById(R.id.brandChip);
+            buyButton = itemView.findViewById(R.id.buyButton);
         }
     }
 }
