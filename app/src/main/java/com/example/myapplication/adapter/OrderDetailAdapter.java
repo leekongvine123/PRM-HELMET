@@ -46,7 +46,7 @@ public class OrderDetailAdapter extends RecyclerView.Adapter<OrderDetailAdapter.
             holder.txtHelmetSize.setText("Size: " + helmet.getSize());
             holder.txtHelmetColor.setText("Color: " + helmet.getColor());
             holder.txtPrice.setText("Price: $" + orderDetail.getPrice());
-            holder.txtQuantity.setText("Quantity: " + orderDetail.getQuantity());
+            holder.txtQuantity.setText("x" + orderDetail.getQuantity());
 
             // Load helmet image using Glide or any other image loading library
             Glide.with(holder.itemView.getContext())

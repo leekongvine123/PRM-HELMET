@@ -37,9 +37,9 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
     @Override
     public void onBindViewHolder(@NonNull OrderViewHolder holder, int position) {
         Order order = orderList.get(position);
-        holder.txtOrderId.setText("Order ID: " + order.getOrderID());
+        holder.txtOrderId.setText("Order #" + order.getOrderID());
         holder.txtOrderDate.setText("Order Date: " + order.getOrderDate());
-        holder.txtTotalAmount.setText("Total Amount: $" + order.getTotalAmount());
+        holder.txtTotalAmount.setText("Total: $" + order.getTotalAmount());
         holder.txtPaymentStatus.setText("Payment Status: " + order.getPaymentStatus());
 
         // Retrieve the order details for this order and set up the nested RecyclerView

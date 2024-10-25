@@ -72,7 +72,7 @@ public class CartFragment extends Fragment {
         }
 
         cartRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-        cartAdapter = new CartAdapter(requireContext(), cartItems);
+        cartAdapter = new CartAdapter(requireContext(), cartItems, dbHelper);
         cartRecyclerView.setAdapter(cartAdapter);
 
         cartAdapter.setOnCartChangeListener(() -> updateTotalAmount(cartAdapter, totalAmountTextView));

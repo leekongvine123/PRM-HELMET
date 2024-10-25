@@ -28,8 +28,8 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/cartRecyclerView"
-        android:layout_width="353dp"
-        android:layout_height="470dp"
+        android:layout_width="384dp"
+        android:layout_height="464dp"
         android:layout_marginTop="16dp"
         app:layout_constraintBottom_toTopOf="@id/selectAllButton"
         app:layout_constraintEnd_toEndOf="parent"
@@ -37,17 +37,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/cartTitle" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/selectAllButton"
-        android:layout_width="wrap_content"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
-        android:backgroundTint="@color/primary"
-        android:text="Select All Items"
-        android:textColor="@android:color/white"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:backgroundTint="#FFA500"
+        android:padding="12dp"
+        android:text="Select All"
+        android:textAllCaps="false"
+        app:cornerRadius="8dp"
+        app:layout_constraintTop_toBottomOf="@id/cartRecyclerView"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/cartRecyclerView" />
+        tools:layout_editor_absoluteX="32dp" />
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -74,14 +76,18 @@
             android:textSize="18sp"
             android:textStyle="bold" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/checkoutButton"
-            android:layout_width="wrap_content"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/primary"
+            android:padding="12dp"
             android:text="Checkout"
-            android:textColor="@android:color/white"
-            android:textStyle="bold" />
+            android:textAllCaps="false"
+            app:cornerRadius="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            android:textStyle="bold"
+            tools:layout_editor_absoluteX="32dp" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

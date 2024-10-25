@@ -798,6 +798,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cartItems;
     }
 
+    public int updateCartItemQuantity(int helmetID, int userID, int newQuantity) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_CART_QUANTITY, newQuantity);
+
+        return db.update(TABLE_CART, values, COLUMN_CART_HELMET_ID + " = ? AND " + COLUMN_CART_USER_ID + " = ?",
+                new String[]{String.valueOf(helmetID), String.valueOf(userID)});
+    }
+
     //--------------------------------------------------------------------------------------------------------------------------------
 
     public int deletePayment(int paymentId) {

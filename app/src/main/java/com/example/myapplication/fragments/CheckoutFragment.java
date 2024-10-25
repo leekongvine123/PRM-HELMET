@@ -89,7 +89,7 @@ public class CheckoutFragment extends Fragment {
 
         if (selectedItems != null && !selectedItems.isEmpty()) {
             checkoutRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-            checkoutAdapter = new CartAdapter(requireContext(), selectedItems);
+            checkoutAdapter = new CartAdapter(requireContext(), selectedItems, dbHelper);
             checkoutRecyclerView.setAdapter(checkoutAdapter);
 
             // Calculate total amount
