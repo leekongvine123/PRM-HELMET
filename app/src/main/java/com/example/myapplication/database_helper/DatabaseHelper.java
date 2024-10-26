@@ -23,7 +23,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "helmet_shop.db";
 
     // Phiên bản cơ sở dữ liệu
-    private static final int DATABASE_VERSION = 12;
+    private static final int DATABASE_VERSION = 13;
 
     // Tên các bảng
     private static final String TABLE_USERS = "Users";
@@ -884,7 +884,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         // Sample data 2
         values.clear();
-        values.put(COLUMN_HELMET_NAME, "Helmet B");
+        values.put(COLUMN_HELMET_NAME, "Helmet Royal");
         values.put(COLUMN_HELMET_BRAND, "Brand B");
         values.put(COLUMN_HELMET_SIZE, "L");
         values.put(COLUMN_HELMET_COLOR, "Blue");
@@ -898,7 +898,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         // Sample data 3
         values.clear();
-        values.put(COLUMN_HELMET_NAME, "Helmet C");
+        values.put(COLUMN_HELMET_NAME, "Helmet Royal");
         values.put(COLUMN_HELMET_BRAND, "Brand C");
         values.put(COLUMN_HELMET_SIZE, "S");
         values.put(COLUMN_HELMET_COLOR, "Red");
@@ -912,7 +912,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         // Sample data 4
         values.clear();
-        values.put(COLUMN_HELMET_NAME, "Helmet D");
+        values.put(COLUMN_HELMET_NAME, "Helmet Royal");
         values.put(COLUMN_HELMET_BRAND, "Brand D");
         values.put(COLUMN_HELMET_SIZE, "XL");
         values.put(COLUMN_HELMET_COLOR, "Green");
@@ -926,7 +926,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         // Sample data 5
         values.clear();
-        values.put(COLUMN_HELMET_NAME, "Helmet E");
+        values.put(COLUMN_HELMET_NAME, "Helmet Royal");
         values.put(COLUMN_HELMET_BRAND, "Brand E");
         values.put(COLUMN_HELMET_SIZE, "M");
         values.put(COLUMN_HELMET_COLOR, "Green");
@@ -955,7 +955,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         // Sample data 2
         values.clear();
-        values.put(COLUMN_HELMET_NAME, "Helmet B");
+        values.put(COLUMN_HELMET_NAME, "Helmet Dragon");
         values.put(COLUMN_HELMET_BRAND, "Brand B");
         values.put(COLUMN_HELMET_SIZE, "L");
         values.put(COLUMN_HELMET_COLOR, "Blue");
@@ -969,7 +969,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         // Sample data 3
         values.clear();
-        values.put(COLUMN_HELMET_NAME, "Helmet C");
+        values.put(COLUMN_HELMET_NAME, "Helmet Dragon");
         values.put(COLUMN_HELMET_BRAND, "Brand C");
         values.put(COLUMN_HELMET_SIZE, "S");
         values.put(COLUMN_HELMET_COLOR, "Red");
@@ -983,7 +983,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         // Sample data 4
         values.clear();
-        values.put(COLUMN_HELMET_NAME, "Helmet D");
+        values.put(COLUMN_HELMET_NAME, "Helmet Dragon");
         values.put(COLUMN_HELMET_BRAND, "Brand D");
         values.put(COLUMN_HELMET_SIZE, "XL");
         values.put(COLUMN_HELMET_COLOR, "Green");
@@ -997,7 +997,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         // Sample data 5
         values.clear();
-        values.put(COLUMN_HELMET_NAME, "Helmet E");
+        values.put(COLUMN_HELMET_NAME, "Helmet Dragon");
         values.put(COLUMN_HELMET_BRAND, "Brand E");
         values.put(COLUMN_HELMET_SIZE, "M");
         values.put(COLUMN_HELMET_COLOR, "Green");
@@ -1025,7 +1025,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         // Sample data 2
         values.clear();
-        values.put(COLUMN_HELMET_NAME, "Helmet B");
+        values.put(COLUMN_HELMET_NAME, "Helmet Cristal");
         values.put(COLUMN_HELMET_BRAND, "Brand B");
         values.put(COLUMN_HELMET_SIZE, "L");
         values.put(COLUMN_HELMET_COLOR, "Blue");
@@ -1039,7 +1039,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         // Sample data 3
         values.clear();
-        values.put(COLUMN_HELMET_NAME, "Helmet C");
+        values.put(COLUMN_HELMET_NAME, "Helmet Cristal");
         values.put(COLUMN_HELMET_BRAND, "Brand C");
         values.put(COLUMN_HELMET_SIZE, "S");
         values.put(COLUMN_HELMET_COLOR, "Red");
@@ -1053,7 +1053,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         // Sample data 4
         values.clear();
-        values.put(COLUMN_HELMET_NAME, "Helmet Galaxy");
+        values.put(COLUMN_HELMET_NAME, "Helmet Cristal");
         values.put(COLUMN_HELMET_BRAND, "Brand D");
         values.put(COLUMN_HELMET_SIZE, "XL");
         values.put(COLUMN_HELMET_COLOR, "Green");
@@ -1067,7 +1067,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         // Sample data 5
         values.clear();
-        values.put(COLUMN_HELMET_NAME, "Helmet E");
+        values.put(COLUMN_HELMET_NAME, "Helmet Cristal");
         values.put(COLUMN_HELMET_BRAND, "Brand E");
         values.put(COLUMN_HELMET_SIZE, "M");
         values.put(COLUMN_HELMET_COLOR, "Green");
@@ -1096,7 +1096,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         // Sample data 2
         values.clear();
-        values.put(COLUMN_HELMET_NAME, "Helmet B");
+        values.put(COLUMN_HELMET_NAME, "Helmet Sun");
         values.put(COLUMN_HELMET_BRAND, "Brand B");
         values.put(COLUMN_HELMET_SIZE, "L");
         values.put(COLUMN_HELMET_COLOR, "Blue");
@@ -1110,7 +1110,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         // Sample data 3
         values.clear();
-        values.put(COLUMN_HELMET_NAME, "Helmet C");
+        values.put(COLUMN_HELMET_NAME, "Helmet Sun");
         values.put(COLUMN_HELMET_BRAND, "Brand C");
         values.put(COLUMN_HELMET_SIZE, "S");
         values.put(COLUMN_HELMET_COLOR, "Red");
@@ -1124,7 +1124,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         // Sample data 4
         values.clear();
-        values.put(COLUMN_HELMET_NAME, "Helmet D");
+        values.put(COLUMN_HELMET_NAME, "Helmet Sun");
         values.put(COLUMN_HELMET_BRAND, "Brand D");
         values.put(COLUMN_HELMET_SIZE, "XL");
         values.put(COLUMN_HELMET_COLOR, "Green");
@@ -1138,7 +1138,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         // Sample data 5
         values.clear();
-        values.put(COLUMN_HELMET_NAME, "Helmet E");
+        values.put(COLUMN_HELMET_NAME, "Helmet Sun");
         values.put(COLUMN_HELMET_BRAND, "Brand E");
         values.put(COLUMN_HELMET_SIZE, "M");
         values.put(COLUMN_HELMET_COLOR, "Green");

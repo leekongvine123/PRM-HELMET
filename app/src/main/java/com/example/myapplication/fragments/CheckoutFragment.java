@@ -132,8 +132,12 @@ public class CheckoutFragment extends Fragment {
         // Step 2: Create a description for the payment using the product names
         StringBuilder productNames = new StringBuilder();
         for (CartItem item : selectedItems) {
-            productNames.append(item.getHelmet().getName()).append(", ");
+            productNames.append(item.getHelmet().getName())
+                    .append(" (Size: ")
+                    .append(item.getHelmet().getSize()) // Assuming `getSize()` retrieves the size
+                    .append("), ");
         }
+
 
         // Remove the trailing comma and space
         if (productNames.length() > 0) {
