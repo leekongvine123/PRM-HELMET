@@ -260,6 +260,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return db.update(TABLE_USERS, values, COLUMN_USER_ID + " = ?", new String[]{String.valueOf(user.getId())});
     }
 
+    public int updateUserByGmail(User user) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_USER_NAME, user.getName());
+        values.put(COLUMN_USER_EMAIL, user.getEmail());
+        values.put(COLUMN_USER_PHONE, user.getPhone());
+        values.put(COLUMN_USER_ADDRESS, user.getAddress());
+        return db.update(TABLE_USERS, values, COLUMN_USER_EMAIL + " = ?", new String[]{String.valueOf(user.getEmail())});
+    }
+
     public int deleteUser(int userId) {
         SQLiteDatabase db = this.getWritableDatabase();
         return db.delete(TABLE_USERS, COLUMN_USER_ID + " = ?", new String[]{String.valueOf(userId)});
