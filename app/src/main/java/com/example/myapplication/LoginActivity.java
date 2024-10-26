@@ -1,8 +1,10 @@
 package com.example.myapplication;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
@@ -13,6 +15,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.myapplication.database_helper.DatabaseHelper;
+import com.example.myapplication.model.User;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -33,8 +37,9 @@ public class LoginActivity extends AppCompatActivity {
     private EditText emailEditText, passwordEditText;
     private Button loginButton, registerButton, googleSignInButton;
     private FirebaseAuth mAuth;
-    private TextView signUpeText;
+    private TextView signUpeText, forgotPasswordText;
     private GoogleSignInClient googleSignInClient;
+    private DatabaseHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +51,8 @@ public class LoginActivity extends AppCompatActivity {
         loginButton = findViewById(R.id.btn_sign_in);
         signUpeText = findViewById(R.id.tv_sign_up);
         googleSignInButton = findViewById(R.id.btn_google_sign_in);
-
+        forgotPasswordText = findViewById(R.id.tv_forgot_password);
+        dbHelper = new DatabaseHelper(this);
         mAuth = FirebaseAuth.getInstance();
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -82,6 +88,44 @@ public class LoginActivity extends AppCompatActivity {
                 startActivityForResult(signInIntent, 100);
             }
         });
+        forgotPasswordText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showForgotPasswordDialog();
+            }
+        });
+    }
+    private void showForgotPasswordDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Input your email address");
+
+        // Set up the input
+        final EditText emailInput = new EditText(this);
+        emailInput.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+        builder.setView(emailInput);
+
+        builder.setPositiveButton("Send", (dialog, which) -> {
+            String email = emailInput.getText().toString().trim();
+            if (!email.isEmpty()) {
+                sendPasswordResetEmail(email);
+            } else {
+                Toast.makeText(LoginActivity.this, "Please enter your email", Toast.LENGTH_SHORT).show();
+            }
+        });
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+
+        builder.show();
+    }
+
+    private void sendPasswordResetEmail(String email) {
+        mAuth.sendPasswordResetEmail(email)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Toast.makeText(LoginActivity.this, "Reset email sent. Check your inbox.", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(LoginActivity.this, "Error: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     private boolean validateInputs() {
@@ -181,6 +225,11 @@ public class LoginActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             FirebaseUser user = mAuth.getCurrentUser();
                             Toast.makeText(LoginActivity.this, "Google Sign In successful", Toast.LENGTH_SHORT).show();
+                            User user1 = dbHelper.getUserByEmail(user.getEmail());
+                            if (user1 == null) {
+                                User newUser = new User("ex", user.getEmail(), "ex", "ex");
+                                dbHelper.addUser(newUser);
+                            }
                             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                             startActivity(intent);
                             finish(); // Prevent going back to login screen
