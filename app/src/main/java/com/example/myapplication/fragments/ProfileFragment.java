@@ -30,6 +30,7 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserInfo;
 
 import java.util.regex.Pattern;
 
@@ -270,6 +271,17 @@ public class ProfileFragment extends Fragment {
                 emailEditText.setText(user.getEmail());
                 phoneEditText.setText(user.getPhone());
                 addressEditText.setText(user.getAddress());
+                boolean isGoogleUser  = false;
+                for (UserInfo profile : firebaseUser.getProviderData()) {
+                    if (profile.getProviderId().equals("google.com")) {
+                        isGoogleUser  = true;
+                        break;
+                    }
+                }
+                // Hide the change password button if the user is logged in via Google
+                if (isGoogleUser ) {
+                    changePasswordButton.setVisibility(View.GONE);
+                }
             } else {
                 Toast.makeText(getActivity(), "User data not found", Toast.LENGTH_SHORT).show();
                 Log.e("ProfileFragment", "User data not found in the database");
