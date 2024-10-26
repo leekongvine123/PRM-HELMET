@@ -715,14 +715,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cartItems;
     }
 
-    public boolean isItemInCart(int cartId, int userId) {
+    public boolean isItemInCart(int helmetId, int userId) {
         SQLiteDatabase db = this.getReadableDatabase();
 
         // Query to check if the item is in the cart for the given user
-        String query = "SELECT * FROM " + TABLE_CART + " WHERE " + COLUMN_CART_ID + " = ? AND " + COLUMN_CART_USER_ID + " = ?";
+        String query = "SELECT * FROM " + TABLE_CART + " WHERE " + COLUMN_HELMET_ID + " = ? AND " + COLUMN_CART_USER_ID + " = ?";
 
         // Execute the query
-        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(cartId), String.valueOf(userId)});
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(helmetId), String.valueOf(userId)});
 
         // Check if the cursor returns any rows
         boolean isInCart = cursor.moveToFirst();
