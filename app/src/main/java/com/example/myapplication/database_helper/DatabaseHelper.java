@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import com.example.myapplication.model.CartItem;
 import com.example.myapplication.model.Helmet;
+import com.example.myapplication.model.Message;
 import com.example.myapplication.model.Order;
 import com.example.myapplication.model.OrderDetail;
 import com.example.myapplication.model.Payment;
@@ -32,6 +33,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TABLE_ORDER_DETAILS = "OrderDetails";
     private static final String TABLE_PAYMENTS = "Payments";
     private static final String TABLE_CART = "Cart";
+    private static final String TABLE_MESSAGE = "Messages";
+
 
     // Tên các cột
     private static final String COLUMN_USER_ID = "Id";
@@ -80,6 +83,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_CART_QUANTITY = "Quantity";
     private static final String COLUMN_CART_PRICE = "Price";
     private static final String COLUMN_CART_USER_ID = "UserID";
+
+    private static final String COLUMN_MESSAGE_ID = "MessageID";
+    private static final String COLUMN_MESSAGE_SENDER_ID = "SenderID";
+    private static final String COLUMN_MESSAGE_RECEIVER_ID = "ReceiverID";
+    private static final String COLUMN_MESSAGE_MESSAGE = "Message";
+    private static final String COLUMN_MESSAGE_CURRENT_TIME = "Timestamp";
 
     // Câu lệnh SQL để tạo bảng
     private static final String CREATE_TABLE_USERS = "CREATE TABLE " + TABLE_USERS + "(" +
@@ -144,6 +153,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + COLUMN_CART_PRICE + " DECIMAL(10,2),"
             + "FOREIGN KEY (" + COLUMN_CART_USER_ID + ") REFERENCES " + TABLE_USERS + "(" + COLUMN_USER_ID + "))";
 
+    private static final String CREATE_TABLE_MESSAGE = "CREATE TABLE " + TABLE_MESSAGE + "(" +
+            COLUMN_MESSAGE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            COLUMN_MESSAGE_SENDER_ID + " INTEGER, " +
+            COLUMN_MESSAGE_RECEIVER_ID + " INTEGER, " +
+            COLUMN_MESSAGE_MESSAGE + " TEXT, " +
+            COLUMN_MESSAGE_CURRENT_TIME + " DATETIME DEFAULT CURRENT_TIMESTAMP" +
+            ")";
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -158,6 +174,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_ORDER_DETAILS);
         db.execSQL(CREATE_TABLE_PAYMENTS);
         db.execSQL(CREATE_TABLE_CART);
+        db.execSQL(CREATE_TABLE_MESSAGE);
 
         insertSampleUsers(db);
         insertSampleHelmets(db);
@@ -1159,8 +1176,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         try {
             // Sample User 1
-            values.put(COLUMN_USER_NAME, "John Doe");
-            values.put(COLUMN_USER_EMAIL, "john@example.com");
+            values.put(COLUMN_USER_NAME, "Admin");
+            values.put(COLUMN_USER_EMAIL, "admin@gmail.com");
             values.put(COLUMN_USER_PHONE, "123456789");
             values.put(COLUMN_USER_ADDRESS, "123 Street, City, Country");
             db.insertOrThrow(TABLE_USERS, null, values); // use insertOrThrow for better error handling
@@ -1176,7 +1193,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             // Sample User 3
             values.clear();
             values.put(COLUMN_USER_NAME, "Alice Johnson");
-            values.put(COLUMN_USER_EMAIL, "alice@example.com");
+            values.put(COLUMN_USER_EMAIL, "alice@gmail.com");
             values.put(COLUMN_USER_PHONE, "543216789");
             values.put(COLUMN_USER_ADDRESS, "789 Boulevard, City, Country");
             db.insertOrThrow(TABLE_USERS, null, values);
@@ -1201,9 +1218,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             values.put(COLUMN_USER_PHONE, "09303030333");
             values.put(COLUMN_USER_ADDRESS, "342 Nguyen Thi Dang, Ho Chi Minh city");
             db.insertOrThrow(TABLE_USERS, null, values);
-
-
-
 
 
         } catch (Exception e) {
@@ -1301,5 +1315,114 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public String getDatabasePath() {
         return this.getWritableDatabase().getPath();
+    }
+
+    public void insertMessage(int senderId, int receiverId, String message) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("senderId", senderId);
+        values.put("receiverId", receiverId);
+        values.put("message", message);
+        db.insert(TABLE_MESSAGE, null, values);
+    }
+
+    // Method to retrieve messages between two users
+//    public List<Message> getMessages(int userId, int otherUserId) {
+//        List<Message> messages = new ArrayList<>();
+//        SQLiteDatabase db = this.getReadableDatabase();
+//        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_MESSAGE +
+//                        " WHERE (SenderID=? AND ReceiverID=?) OR (SenderID=? AND ReceiverID=?) ORDER BY Timestamp",
+//                new String[]{String.valueOf(userId), String.valueOf(otherUserId), String.valueOf(otherUserId), String.valueOf(userId)});
+//
+//        if (cursor.moveToFirst()) {
+//            do {
+//                messages.add(new Message(cursor.getInt(0), cursor.getInt(1), cursor.getInt(2), cursor.getString(3), cursor.getString(4)));
+//            } while (cursor.moveToNext());
+//        }
+//        cursor.close();
+//        return messages;
+//    }
+    public List<Message> getMessages(int userId, int otherUserId) {
+        List<Message> messages = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_MESSAGE +
+                        " WHERE (ReceiverID = ? AND SenderID = ?) OR (ReceiverID = ? AND SenderID = ?)  ORDER BY Timestamp",
+                new String[]{String.valueOf(otherUserId), String.valueOf(userId), String.valueOf(userId), String.valueOf(otherUserId)});
+
+        if (cursor.moveToFirst()) {
+            do {
+                messages.add(new Message(cursor.getInt(0), cursor.getInt(1), cursor.getInt(2), cursor.getString(3), cursor.getString(4)));
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return messages;
+    }
+
+    public List<Message> getMessagesForAdmin(int userId, int otherUserId) {
+        List<Message> messages = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_MESSAGE +
+                        " WHERE ReceiverID = ? AND SenderID = ? ORDER BY Timestamp",
+                new String[]{String.valueOf(userId), String.valueOf(otherUserId)});
+
+        if (cursor.moveToFirst()) {
+            do {
+                messages.add(new Message(cursor.getInt(0), cursor.getInt(1), cursor.getInt(2), cursor.getString(3), cursor.getString(4)));
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return messages;
+    }
+
+
+
+    public Message getLatestMessage(int userId, int otherUserId) {
+        Message message = null;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_MESSAGE +
+                        " WHERE SenderID = ? AND ReceiverID = ?  ORDER BY MessageID DESC LIMIT 1",
+                new String[]{String.valueOf(userId), String.valueOf(otherUserId)});
+
+        if (cursor != null && cursor.moveToFirst()) {
+            message = new Message();
+            message.setId(cursor.getInt(0));
+            message.setSenderId(cursor.getInt(1));
+            message.setReceiverId(cursor.getInt(2));
+            message.setMessage(cursor.getString(3));
+            message.setTimestamp(cursor.getString(4));
+        }
+        if (cursor != null) {
+            cursor.close();
+        }
+        return message;
+    }
+
+    public List<Message> getLatestMessagesFromEachSender(int receiverId) {
+        List<Message> messages = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String query = "SELECT * FROM " + TABLE_MESSAGE +
+                " WHERE ReceiverID = ? " +
+                " GROUP BY SenderID " +
+                " ORDER BY MAX(MessageID) DESC";
+
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(receiverId)});
+
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                Message message = new Message();
+                message.setId(cursor.getInt(0));
+                message.setSenderId(cursor.getInt(1));
+                message.setReceiverId(cursor.getInt(2));
+                message.setMessage(cursor.getString(3));
+                message.setTimestamp(cursor.getString(4));
+
+                messages.add(message);
+            } while (cursor.moveToNext());
+
+            cursor.close();
+        }
+
+        return messages;
     }
 }

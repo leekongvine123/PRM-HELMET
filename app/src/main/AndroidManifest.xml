@@ -44,10 +44,11 @@
             android:name=".RegisterActivity"
             android:exported="false" />
         <activity
-
             android:name=".MainActivity"
             android:exported="true"></activity>
-
+        <activity
+            android:name=".ChatActivity"
+            android:exported="false"></activity>
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyAfUjFydZ177sYh9LPRXR2INRL5TQtnv1M" />

@@ -18,6 +18,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.myapplication.ChatActivity;
 import com.example.myapplication.LoginActivity;
 import com.example.myapplication.R;
 import com.example.myapplication.database_helper.DatabaseHelper;
@@ -36,7 +37,7 @@ import java.util.regex.Pattern;
 
 public class ProfileFragment extends Fragment {
     private EditText nameEditText, emailEditText, phoneEditText, addressEditText;
-    private Button editButton, logoutButton, changePasswordButton;
+    private Button editButton, logoutButton, changePasswordButton, btnChat;
     private boolean isEditMode = false;
 
     private FirebaseAuth mAuth;
@@ -66,6 +67,11 @@ public class ProfileFragment extends Fragment {
         setupListeners();
         loadUserData();
 
+        btnChat.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), ChatActivity.class);
+            startActivity(intent);
+        });
+
         return view;
     }
 
@@ -77,6 +83,7 @@ public class ProfileFragment extends Fragment {
         editButton = view.findViewById(R.id.editButton);
         changePasswordButton = view.findViewById(R.id.changePasswordButton);
         logoutButton = view.findViewById(R.id.logoutButton);
+        btnChat = view.findViewById(R.id.btnChat);
     }
     private void showChangePasswordDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());

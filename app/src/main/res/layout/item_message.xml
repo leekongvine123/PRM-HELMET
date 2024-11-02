@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="8dp"
+    android:layout_margin="4dp">
+
+    <!-- Sender Message Box (aligned to the left) -->
+    <LinearLayout
+        android:id="@+id/senderMessageLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="start"
+        android:layout_margin="4dp"
+        android:layout_gravity="start">
+
+        <TextView
+            android:id="@+id/tvSenderMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_sender_message"
+            android:padding="8dp"
+            android:textColor="#000000"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/tvSenderTimestamp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textColor="#888888"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <!-- Me Message Box (aligned to the right) -->
+    <LinearLayout
+        android:id="@+id/meMessageLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="end"
+        android:layout_margin="4dp"
+        android:layout_gravity="end">
+
+        <TextView
+            android:id="@+id/tvMeMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_me_message"
+            android:padding="8dp"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/tvMeTimestamp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textColor="#888888"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+</LinearLayout>

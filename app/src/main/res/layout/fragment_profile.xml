@@ -159,6 +159,24 @@
             </LinearLayout>
         </LinearLayout>
 
+        <RelativeLayout
+            android:id="@+id/StFourthLayout"
+            android:layout_below="@+id/StthirdLayout"
+            android:layout_width="match_parent"
+            android:clickable="true"
+            android:background="?attr/selectableItemBackground"
+            android:layout_marginTop="15dp"
+            android:gravity="center_vertical"
+            android:layout_height="wrap_content">
+            <Button
+                android:id="@+id/btnChat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp"
+                android:layout_marginEnd="15dp"
+                android:layout_marginBottom="0dp"
+                android:text="Chat Admin" />  </RelativeLayout>
+
         <!-- Edit/Save Button -->
         <Button
             android:id="@+id/editButton"
