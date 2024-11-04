@@ -41,6 +41,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         LatLng mapChanh = new LatLng(10.8231, 106.6297);
         this.gMap.addMarker(new MarkerOptions().position(mapChanh).title("HCM"));
-        this.gMap.moveCamera(CameraUpdateFactory.newLatLng(mapChanh));
+
+        float zoomLevel = 15.0f;
+        this.gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mapChanh, zoomLevel));
     }
 }
